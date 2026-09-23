@@ -48,6 +48,15 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto y las variables de
   la fórmula que ya se han explicado, que se muestran arriba. Hoy hay dos pasos
   (cuerpo y masa, con la `m` en azul); en el último, "Siguiente" queda desactivado.
+- En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo). Al
+  señalar uno con el ratón, o al enfocarlo con el teclado, la `m` de la fórmula pasa a
+  mostrar su masa. Se muestra la masa y no el peso porque la `m` de la fórmula es la
+  masa (el peso es una fuerza).
+- Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
+  no hay hover, y tocar un elemento no siempre le da foco (p. ej. en Safari de iOS),
+  así que ahí puede no verse la masa.
+- Al pasar del paso 1 al 2 aparece un segundo cuerpo y el bloque se recentra, por lo
+  que el círculo grande se desplaza un poco hacia la izquierda.
 - "Saltar introducción" sigue siendo solo visual.
 - En móviles muy cortos (unos 568px de alto) la `m` de la fórmula queda casi pegada al
   contenido, sin llegar a solaparse.

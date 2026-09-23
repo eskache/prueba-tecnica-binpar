@@ -26,6 +26,7 @@
 
   /* Resplandor de los cuerpos: un halo cercano e intenso y otro ancho y suave. */
   --shadow-glow: 0 0 30px 4px var(--accent-glow), 0 0 90px 20px var(--accent-soft);
+  --shadow-glow-white: 0 0 20px 3px rgba(255, 255, 255, 0.35);
 
   /* Flotación suave: sube y baja 12px cada 6 segundos. */
   --animate-float: float 6s ease-in-out infinite;
@@ -61,5 +62,4 @@ body {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 2px;
 }
