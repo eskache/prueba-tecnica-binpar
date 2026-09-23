@@ -1,6 +1,7 @@
 import Term from "@/components/Term";
 import ScrollCue from "@/components/aprendizaje/ScrollCue";
 import SkipIntroButton from "@/components/aprendizaje/SkipIntroButton";
+import GravitySimulationLoader from "@/components/aprendizaje/GravitySimulationLoader";
 
 export default function AprendizajePage() {
   return (
@@ -27,9 +28,16 @@ export default function AprendizajePage() {
         <ScrollCue />
       </section>
 
-      {/* Placeholder: siguiente paso de la experiencia, todavía sin construir. */}
-      <section className="flex min-h-[40vh] items-center justify-center px-6 text-center text-muted">
-        <p>Próximo paso — en construcción.</p>
+      {/*
+        Vista previa fuera de orden: los pasos 2-4 (masa, distancia,
+        constante universal) todavía no existen. Esto es el motor de la
+        simulación final, montado ya para poder probarlo de forma aislada.
+      */}
+      <section className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted">
+          Vista previa — pasos 2 a 4 pendientes
+        </p>
+        <GravitySimulationLoader />
       </section>
     </>
   );
