@@ -84,6 +84,9 @@ numéricamente cuando dos cuerpos casi se solapan.
   (no hay `onClick`/`onKeyDown`), lo que un lector de pantalla anuncia como "botón"
   de forma engañosa. Pendiente: quitar el rol y dejar solo `tabIndex` +
   `aria-describedby`, que es el patrón correcto para texto con descripción adjunta.
+- En pantallas de unos 320px de ancho aparece scroll horizontal: el botón fijo "Saltar
+  introducción" tiene el texto demasiado largo y el tooltip de `Term` (invisible pero
+  presente en el layout) se sale por el lado. A 375px no ocurre.
 - La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
   Ese botón y "Saltar introducción" son solo visuales por ahora, y todavía no hay un
   segundo paso al que avanzar.

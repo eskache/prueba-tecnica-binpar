@@ -7,6 +7,7 @@
   --muted: #9a9aa8;
   --accent: #f5a524;
   --accent-soft: rgba(245, 165, 36, 0.12);
+  --accent-glow: rgba(245, 165, 36, 0.45);
   --border: #23232f;
 }
 
@@ -20,6 +21,22 @@
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Resplandor de los cuerpos: un halo cercano e intenso y otro ancho y suave. */
+  --shadow-glow: 0 0 30px 4px var(--accent-glow), 0 0 90px 20px var(--accent-soft);
+
+  /* Flotación suave: sube y baja 12px cada 6 segundos. */
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
 }
 
 body {

@@ -11,7 +11,7 @@ export default function AprendizajePage() {
         <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
           <div
             aria-hidden="true"
-            className="h-28 w-28 shrink-0 rounded-full bg-accent shadow-[0_0_60px_10px_var(--accent-soft)] sm:h-40 sm:w-40"
+            className="h-28 w-28 shrink-0 rounded-full bg-accent shadow-glow motion-safe:animate-float sm:h-40 sm:w-40"
           />
 
           <p className="max-w-xl text-center text-2xl leading-relaxed text-foreground sm:text-left sm:text-3xl">
