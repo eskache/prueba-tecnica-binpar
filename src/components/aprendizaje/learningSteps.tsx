@@ -33,15 +33,15 @@ export const LEARNING_STEPS: LearningStep[] = [
         <Term
           word="masa"
           color="mass"
-          definition="La cantidad de materia que tiene un cuerpo. Cuanta más masa, más atrae a los demás. Se mide en kilogramos y en la fórmula se representa con la letra m."
+          definition="La cantidad de materia que tiene un cuerpo. Cuanta más masa, más atrae a los demás. Se mide en kilogramos y en la fórmula se representa con la letra m: m₁ y m₂ son las masas de los dos cuerpos."
         />
         .
       </>
     ),
     bodies: [
-      { id: "large", massInKg: 100 },
-      { id: "small", massInKg: 10 },
+      { id: "large", mass: { variable: "mass1", inKg: 100 } },
+      { id: "small", mass: { variable: "mass2", inKg: 10 } },
     ],
-    formulaVariables: ["mass"],
+    formulaVariables: ["mass1", "mass2"],
   },
 ];

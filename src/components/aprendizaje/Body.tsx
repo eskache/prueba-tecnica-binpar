@@ -1,7 +1,10 @@
+import type { FormulaVariable } from "./Formula";
+
 export type BodyData = {
   id: "large" | "small";
-  /** Solo se conoce cuando el paso ya habla de masa. */
-  massInKg?: number;
+  /** La masa del cuerpo y la variable de la fórmula que la representa.
+   * Solo se conoce cuando el paso ya habla de masa. */
+  mass?: { variable: FormulaVariable; inKg: number };
 };
 
 const BODY_STYLES: Record<BodyData["id"], string> = {
@@ -9,15 +12,9 @@ const BODY_STYLES: Record<BodyData["id"], string> = {
   small: "h-8 w-8 bg-foreground shadow-glow-white sm:h-10 sm:w-10",
 };
 
-/** El mismo color que el cuerpo, para pintar con él texto que lo represente. */
-export const BODY_TEXT_COLORS: Record<BodyData["id"], string> = {
-  large: "text-accent",
-  small: "text-foreground",
-};
-
 type BodyProps = {
   body: BodyData;
-  onHoverChange: (hoveredBody: BodyData | null) => void;
+  onHoverChange: (isHovered: boolean) => void;
 };
 
 export default function Body({ body, onHoverChange }: BodyProps) {
@@ -25,17 +22,17 @@ export default function Body({ body, onHoverChange }: BodyProps) {
 
   return (
     <div className="shrink-0 motion-safe:animate-fade-in">
-      {body.massInKg === undefined ? (
+      {body.mass === undefined ? (
         <div aria-hidden="true" className={circleClassName} />
       ) : (
         <div
           role="img"
           tabIndex={0}
-          aria-label={`Cuerpo con una masa de ${body.massInKg} kg`}
-          onMouseEnter={() => onHoverChange(body)}
-          onMouseLeave={() => onHoverChange(null)}
-          onFocus={() => onHoverChange(body)}
-          onBlur={() => onHoverChange(null)}
+          aria-label={`Cuerpo con una masa de ${body.mass.inKg} kg`}
+          onMouseEnter={() => onHoverChange(true)}
+          onMouseLeave={() => onHoverChange(false)}
+          onFocus={() => onHoverChange(true)}
+          onBlur={() => onHoverChange(false)}
           className={circleClassName}
         />
       )}
