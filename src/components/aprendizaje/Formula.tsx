@@ -5,6 +5,7 @@ export type FormulaVariable = "mass1" | "mass2";
 /** Valores concretos que se muestran momentáneamente en lugar del símbolo. */
 export type FormulaValues = Partial<Record<FormulaVariable, string>>;
 
+// Cada masa tiene el color del cuerpo al que representa (ver Body.tsx).
 const VARIABLES: Record<FormulaVariable, { symbol: ReactNode; colorClass: string }> = {
   mass1: {
     symbol: (
@@ -12,7 +13,7 @@ const VARIABLES: Record<FormulaVariable, { symbol: ReactNode; colorClass: string
         m<sub>1</sub>
       </>
     ),
-    colorClass: "text-mass",
+    colorClass: "text-accent",
   },
   mass2: {
     symbol: (
@@ -20,7 +21,7 @@ const VARIABLES: Record<FormulaVariable, { symbol: ReactNode; colorClass: string
         m<sub>2</sub>
       </>
     ),
-    colorClass: "text-mass",
+    colorClass: "text-foreground",
   },
 };
 
