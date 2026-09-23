@@ -84,6 +84,8 @@ numéricamente cuando dos cuerpos casi se solapan.
   (no hay `onClick`/`onKeyDown`), lo que un lector de pantalla anuncia como "botón"
   de forma engañosa. Pendiente: quitar el rol y dejar solo `tabIndex` +
   `aria-describedby`, que es el patrón correcto para texto con descripción adjunta.
-- Los pasos 2 a 4 del guion de Parte A (masa, distancia, constante universal, y la
-  fórmula con colores) todavía no existen. La simulación está montada como vista
-  previa fuera de orden en `/aprendizaje`, directamente después del paso 1.
+- La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
+  Ese botón y "Saltar introducción" son solo visuales por ahora, y todavía no hay un
+  segundo paso al que avanzar.
+- La simulación (motor, hook y componente) está construida y probada, pero no se
+  muestra en ninguna página: se montará como uno de los pasos cuando existan.
