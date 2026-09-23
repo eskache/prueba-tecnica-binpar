@@ -74,16 +74,44 @@ numéricamente cuando dos cuerpos casi se solapan.
   la fuerza se dispare a infinito; no se fusionan ni conservan momento combinado.
 - Reposicionar un cuerpo por teclado (hoy el arrastre es solo ratón/táctil).
 
+## Guion de la Parte A
+
+Cuatro pasos en scroll y, al final, la simulación:
+
+1. **Cuerpo** — un cuerpo es cualquier objeto con masa.
+2. **Masa** — más masa, más atracción. Aparece la fórmula con la masa encendida.
+3. **Distancia** — más cerca, más atracción; al doblar la distancia la fuerza cae a la
+   cuarta parte (`r²`). Se enciende la distancia.
+4. **Constante universal (G)** — el número fijo que da la escala. La fórmula queda
+   completa.
+5. **Simulación** — "ya conoces las piezas, ahora muévelas tú".
+
+Decisiones de esta parte:
+
+- **Código de color único** (`src/lib/tones.ts` + tokens en `globals.css`): masa
+  (naranja, el mismo de los cuerpos), distancia (azul), constante (violeta). El mismo
+  color se usa en la fórmula, su leyenda, las ilustraciones y las palabras con
+  definición, de modo que el color enseña qué es cada parte.
+- **La fórmula se enciende por pasos**: las partes aún no explicadas quedan apagadas
+  y la que se explica ahora lleva un resalte de fondo. Cada paso incluye su propia
+  fórmula (estado derivado del paso, sin estado compartido ni observadores) en vez de
+  una sola fórmula pegajosa: es más simple, funciona sin JavaScript y cada pantalla se
+  entiende por sí sola.
+- **`Reveal`**: los pasos aparecen con un fundido al hacer scroll. El contenido llega
+  visible desde el servidor y solo se oculta en el cliente si está fuera de pantalla,
+  así que sin JS, con `prefers-reduced-motion` o al recargar a mitad de página nunca
+  queda nada invisible.
+- **Contenido como datos** (`src/app/aprendizaje/lawSteps.tsx`): los pasos 2 a 4 son un
+  array que una única plantilla (`LawStep`) pinta.
+- La fórmula es HTML/CSS con `role="math"` y una lectura en voz alta (`aria-label`),
+  en lugar de una librería de matemáticas: son cuatro símbolos y una fracción.
+- **`Term`** funciona con hover, foco, clic o toque (que lo deja fijado) y se cierra
+  con Escape o pulsando fuera. Se desplaza lo justo para no salirse de la pantalla en
+  móvil.
+
 ## Limitaciones conocidas / pendiente
 
-- El componente `Term` (palabra con definición al hover) solo se activa con
-  `hover`/`focus`. En pantallas táctiles no hay hover real, así que en móvil el
-  usuario puede no llegar a ver la definición. Pendiente: añadir un `onClick`/tap que
-  alterne el tooltip como fallback táctil.
-- `Term` usa `role="button"` en el span disparador sin tener una acción asociada
-  (no hay `onClick`/`onKeyDown`), lo que un lector de pantalla anuncia como "botón"
-  de forma engañosa. Pendiente: quitar el rol y dejar solo `tabIndex` +
-  `aria-describedby`, que es el patrón correcto para texto con descripción adjunta.
-- Los pasos 2 a 4 del guion de Parte A (masa, distancia, constante universal, y la
-  fórmula con colores) todavía no existen. La simulación está montada como vista
-  previa fuera de orden en `/aprendizaje`, directamente después del paso 1.
+- El botón "saltar introducción" todavía no hace nada (solo está el elemento visual).
+- Las ilustraciones de los pasos 2 a 4 son animaciones o dibujos, no interactivas: la
+  interacción real está en la simulación final.
+- Sin tests de interfaz; los tests cubren la lógica pura del motor de física.

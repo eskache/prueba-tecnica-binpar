@@ -1,14 +1,20 @@
 import Term from "@/components/Term";
+import GravitySimulationLoader from "@/components/aprendizaje/GravitySimulationLoader";
+import LawStep from "@/components/aprendizaje/LawStep";
+import Reveal from "@/components/aprendizaje/Reveal";
 import ScrollCue from "@/components/aprendizaje/ScrollCue";
 import SkipIntroButton from "@/components/aprendizaje/SkipIntroButton";
-import GravitySimulationLoader from "@/components/aprendizaje/GravitySimulationLoader";
+import { LAW_STEPS } from "./lawSteps";
 
 export default function AprendizajePage() {
   return (
     <>
       <SkipIntroButton />
 
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-16 sm:px-12">
+      <section
+        aria-label="Paso 1: cuerpo"
+        className="relative flex min-h-screen flex-col items-center justify-center px-6 py-16 sm:px-12"
+      >
         <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
           <div
             aria-hidden="true"
@@ -28,16 +34,28 @@ export default function AprendizajePage() {
         <ScrollCue />
       </section>
 
-      {/*
-        Vista previa fuera de orden: los pasos 2-4 (masa, distancia,
-        constante universal) todavía no existen. Esto es el motor de la
-        simulación final, montado ya para poder probarlo de forma aislada.
-      */}
-      <section className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted">
-          Vista previa — pasos 2 a 4 pendientes
-        </p>
-        <GravitySimulationLoader />
+      {LAW_STEPS.map((step) => (
+        <LawStep key={step.id} {...step} />
+      ))}
+
+      <section
+        id="simulacion"
+        aria-label="Simulación"
+        className="flex min-h-screen flex-col items-center justify-center px-6 py-24 sm:px-12"
+      >
+        <Reveal className="flex w-full flex-col items-center gap-10 text-center">
+          <div className="max-w-xl">
+            <h2 className="text-2xl leading-snug text-foreground sm:text-3xl">
+              Ya conoces las piezas. Ahora muévelas tú.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+              Añade cuerpos, cambia sus masas y arrástralos: verás cómo cambia
+              la atracción entre ellos.
+            </p>
+          </div>
+
+          <GravitySimulationLoader />
+        </Reveal>
       </section>
     </>
   );
