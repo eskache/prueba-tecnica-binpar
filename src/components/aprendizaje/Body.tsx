@@ -9,6 +9,12 @@ const BODY_STYLES: Record<BodyData["id"], string> = {
   small: "h-8 w-8 bg-foreground shadow-glow-white sm:h-10 sm:w-10",
 };
 
+/** El mismo color que el cuerpo, para pintar con él texto que lo represente. */
+export const BODY_TEXT_COLORS: Record<BodyData["id"], string> = {
+  large: "text-accent",
+  small: "text-foreground",
+};
+
 type BodyProps = {
   body: BodyData;
   onHoverChange: (hoveredBody: BodyData | null) => void;

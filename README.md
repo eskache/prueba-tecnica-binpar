@@ -50,8 +50,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   (cuerpo y masa, con la `m` en azul); en el último, "Siguiente" queda desactivado.
 - En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo). Al
   señalar uno con el ratón, o al enfocarlo con el teclado, la `m` de la fórmula pasa a
-  mostrar su masa. Se muestra la masa y no el peso porque la `m` de la fórmula es la
-  masa (el peso es una fuerza).
+  mostrar su masa, con el color de ese cuerpo (naranja o blanco). Se muestra la masa y
+  no el peso porque la `m` de la fórmula es la masa (el peso es una fuerza).
 - Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
   no hay hover, y tocar un elemento no siempre le da foco (p. ej. en Safari de iOS),
   así que ahí puede no verse la masa.

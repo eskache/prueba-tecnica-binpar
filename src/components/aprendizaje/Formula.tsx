@@ -1,7 +1,12 @@
 export type FormulaVariable = "mass";
 
-/** Valores concretos que sustituyen momentáneamente al símbolo de una variable. */
-export type FormulaValues = Partial<Record<FormulaVariable, string>>;
+/** Lo que se muestra momentáneamente en lugar del símbolo de una variable. */
+export type FormulaOverride = {
+  text: string;
+  colorClass: string;
+};
+
+export type FormulaOverrides = Partial<Record<FormulaVariable, FormulaOverride>>;
 
 const VARIABLES: Record<FormulaVariable, { symbol: string; colorClass: string }> = {
   mass: { symbol: "m", colorClass: "text-mass" },
@@ -9,21 +14,27 @@ const VARIABLES: Record<FormulaVariable, { symbol: string; colorClass: string }>
 
 type FormulaProps = {
   variables: FormulaVariable[];
-  values?: FormulaValues;
+  overrides?: FormulaOverrides;
 };
 
 /** Las variables de la fórmula que ya se han explicado, en la parte superior. */
-export default function Formula({ variables, values = {} }: FormulaProps) {
+export default function Formula({ variables, overrides = {} }: FormulaProps) {
   return (
     <div className="absolute inset-x-0 top-20 flex justify-center gap-4 text-5xl font-medium">
-      {variables.map((variable) => (
-        <span
-          key={variable}
-          className={`${VARIABLES[variable].colorClass} motion-safe:animate-fade-in`}
-        >
-          {values[variable] ?? VARIABLES[variable].symbol}
-        </span>
-      ))}
+      {variables.map((variable) => {
+        const override = overrides[variable];
+        const text = override?.text ?? VARIABLES[variable].symbol;
+        const colorClass = override?.colorClass ?? VARIABLES[variable].colorClass;
+
+        return (
+          <span
+            key={variable}
+            className={`${colorClass} transition-colors duration-200 motion-safe:animate-fade-in`}
+          >
+            {text}
+          </span>
+        );
+      })}
     </div>
   );
 }
