@@ -41,14 +41,20 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   (no hay `onClick`/`onKeyDown`), lo que un lector de pantalla anuncia como "botón"
   de forma engañosa. Pendiente: quitar el rol y dejar solo `tabIndex` +
   `aria-describedby`, que es el patrón correcto para texto con descripción adjunta.
-- En pantallas de unos 320px de ancho aparece scroll horizontal: el botón fijo "Saltar
-  introducción" tiene el texto demasiado largo y el tooltip de `Term` (invisible pero
-  presente en el layout) se sale por el lado. A 375px no ocurre.
+- En pantallas de unos 320px de ancho puede aparecer scroll horizontal, porque el
+  botón fijo "Saltar introducción" tiene el texto demasiado largo. A 375px no ocurre.
+- El tooltip de `Term` se centra sobre la palabra, pero se desplaza lo justo para no
+  salirse de la pantalla, y cerrado no ocupa sitio (`hidden`): un tooltip invisible
+  fuera de pantalla bastaba para que toda la página tuviera scroll horizontal.
 - La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
-  explicado, que se muestran arriba. Hoy hay dos pasos
-  (cuerpo y masa, con la `m` en azul); en el último, "Siguiente" queda desactivado.
+  explicado, que se muestran arriba. Hoy hay tres pasos (cuerpo, masa y gravedad); en
+  el último, "Siguiente" queda desactivado.
+- En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
+  el cuerpo blanco se acerca al naranja, acelerando, una sola vez al llegar al paso.
+  Con "reducir movimiento" activado no hay animación y los cuerpos se quedan en su
+  sitio. La fórmula todavía no incluye la constante `G`.
 - En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo) y la
   fórmula muestra `m₁` (naranja, como el cuerpo grande) `×` `m₂` (blanco, como el
   pequeño). Al señalar cualquiera de los dos con el ratón, o al

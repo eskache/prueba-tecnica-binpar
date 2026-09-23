@@ -5,6 +5,8 @@ export type BodyData = {
   /** La masa del cuerpo y la variable de la fórmula que la representa.
    * Solo se conoce cuando el paso ya habla de masa. */
   mass?: { variable: FormulaVariable; inKg: number };
+  /** Si el cuerpo se acerca al grande, atraído por él. */
+  approachesLargeBody?: boolean;
 };
 
 const BODY_STYLES: Record<BodyData["id"], string> = {
@@ -20,8 +22,13 @@ type BodyProps = {
 export default function Body({ body, onHoverChange }: BodyProps) {
   const circleClassName = `rounded-full motion-safe:animate-float ${BODY_STYLES[body.id]}`;
 
+  // El contenedor se desplaza al acercarse, y el círculo de dentro sigue flotando.
+  const containerAnimationClass = body.approachesLargeBody
+    ? "motion-safe:animate-approach"
+    : "motion-safe:animate-fade-in";
+
   return (
-    <div className="shrink-0 motion-safe:animate-fade-in">
+    <div className={`shrink-0 ${containerAnimationClass}`}>
       {body.mass === undefined ? (
         <div aria-hidden="true" className={circleClassName} />
       ) : (

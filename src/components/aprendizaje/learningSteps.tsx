@@ -11,6 +11,10 @@ export type LearningStep = {
   formulaParts: FormulaPart[];
 };
 
+// Los dos cuerpos, ya con su masa, a partir del paso en que se habla de ella.
+const LARGE_BODY: BodyData = { id: "large", mass: { variable: "mass1", inKg: 100 } };
+const SMALL_BODY: BodyData = { id: "small", mass: { variable: "mass2", inKg: 10 } };
+
 export const LEARNING_STEPS: LearningStep[] = [
   {
     text: (
@@ -38,10 +42,22 @@ export const LEARNING_STEPS: LearningStep[] = [
         .
       </>
     ),
-    bodies: [
-      { id: "large", mass: { variable: "mass1", inKg: 100 } },
-      { id: "small", mass: { variable: "mass2", inKg: 10 } },
-    ],
+    bodies: [LARGE_BODY, SMALL_BODY],
+    formulaParts: ["mass1", "times", "mass2"],
+  },
+  {
+    text: (
+      <>
+        Todos los cuerpos se atraen entre sí debido a la{" "}
+        <Term
+          word="gravedad"
+          color="constant"
+          definition="La atracción que ejercen entre sí todos los cuerpos con masa. Cuánto atraen depende de sus masas, de la distancia que los separa y de una constante universal, siempre la misma, que se representa con la letra G."
+        />
+        .
+      </>
+    ),
+    bodies: [LARGE_BODY, { ...SMALL_BODY, approachesLargeBody: true }],
     formulaParts: ["mass1", "times", "mass2"],
   },
 ];

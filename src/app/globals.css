@@ -9,6 +9,7 @@
   --accent-soft: rgba(245, 165, 36, 0.12);
   --accent-glow: rgba(245, 165, 36, 0.45);
   --mass: #5eb1ff;
+  --constant: #b389f9;
   --border: #23232f;
 }
 
@@ -20,6 +21,7 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-mass: var(--mass);
+  --color-constant: var(--constant);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -38,6 +40,19 @@
     }
     50% {
       transform: translateY(-12px);
+    }
+  }
+
+  /* El cuerpo pequeño se acerca al grande, acelerando como en una atracción
+     real. Empieza tras una pequeña pausa, y mientras tanto espera lejos ("both"). */
+  --animate-approach: approach 1.6s ease-in 0.5s both;
+
+  @keyframes approach {
+    from {
+      transform: translateX(3rem);
+    }
+    to {
+      transform: translateX(-1rem);
     }
   }
 
