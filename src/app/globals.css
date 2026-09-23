@@ -43,16 +43,57 @@
     }
   }
 
-  /* El cuerpo pequeño se acerca al grande, acelerando como en una atracción
-     real. Empieza tras una pequeña pausa, y mientras tanto espera lejos ("both"). */
-  --animate-approach: approach 1.6s ease-in 0.5s both;
+  /* El cuerpo pequeño se acerca al grande, acelerando como en una atracción real,
+     y el ciclo se repite. Como al empezar y al terminar es invisible, no se ve
+     el salto de vuelta a la posición inicial. Un ciclo de 8 segundos:
+       0-10%    aparece lejos (fundido)
+       10-20%   espera lejos, con la flecha señalando al cuerpo grande
+       20-75%   se acerca, acelerando (ease-in)
+       75-90%   espera cerca
+       90-100%  se desvanece */
+  --animate-approach: approach 8s ease-in-out infinite;
 
   @keyframes approach {
-    from {
+    0% {
       transform: translateX(3rem);
+      opacity: 0;
     }
-    to {
+    10% {
+      transform: translateX(3rem);
+      opacity: 1;
+    }
+    20% {
+      transform: translateX(3rem);
+      opacity: 1;
+      animation-timing-function: ease-in;
+    }
+    75% {
       transform: translateX(-1rem);
+      opacity: 1;
+    }
+    90% {
+      transform: translateX(-1rem);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-1rem);
+      opacity: 0;
+    }
+  }
+
+  /* La flecha que señala al cuerpo grande se ve mientras el pequeño está lejos
+     y se desvanece antes de que se acerque tanto que ya no cabría entre ambos.
+     Dura lo mismo que "approach" para ir sincronizada con él. */
+  --animate-approach-hint: approach-hint 8s ease-in-out infinite;
+
+  @keyframes approach-hint {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    58%,
+    100% {
+      opacity: 0;
     }
   }
 

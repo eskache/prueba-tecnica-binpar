@@ -52,9 +52,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   explicado, que se muestran arriba. Hoy hay tres pasos (cuerpo, masa y gravedad); en
   el último, "Siguiente" queda desactivado.
 - En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
-  el cuerpo blanco se acerca al naranja, acelerando, una sola vez al llegar al paso.
-  Con "reducir movimiento" activado no hay animación y los cuerpos se quedan en su
-  sitio. La fórmula todavía no incluye la constante `G`.
+  el cuerpo blanco se acerca al naranja, acelerando, en un bucle de 8 segundos: aparece
+  lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
+  cerca y vuelve a empezar. Como al reiniciar es invisible, no se ve ningún salto.
+  Con "reducir movimiento" activado no hay animación ni flecha y los cuerpos se
+  quedan en su sitio. La fórmula todavía no incluye la constante `G`.
 - En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo) y la
   fórmula muestra `m₁` (naranja, como el cuerpo grande) `×` `m₂` (blanco, como el
   pequeño). Al señalar cualquiera de los dos con el ratón, o al
