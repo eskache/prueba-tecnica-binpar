@@ -8,15 +8,6 @@
   --accent: #f5a524;
   --accent-soft: rgba(245, 165, 36, 0.12);
   --border: #23232f;
-
-  /* Código de color de la ley (ver src/lib/tones.ts). La masa reutiliza el
-     naranja de los cuerpos, que es el que ya se ha visto desde el paso 1. */
-  --mass: var(--accent);
-  --distance: #5eb1ff;
-  --constant: #b389f9;
-  --constant-soft: rgba(179, 137, 249, 0.22);
-  /* Parte de la fórmula que aún no se ha explicado. */
-  --dim: #5c5c6b;
 }
 
 @theme inline {
@@ -27,10 +18,6 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-border: var(--border);
-  --color-mass: var(--mass);
-  --color-distance: var(--distance);
-  --color-constant: var(--constant);
-  --color-dim: var(--dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -62,64 +49,8 @@ body {
   animation: scroll-cue 1.8s ease-in-out infinite;
 }
 
-/* Paso 3: la línea de distancia se acorta y se alarga, y el brillo de los
-   cuerpos hace lo contrario (más brillo = más atracción = más cerca). Ambas
-   animaciones comparten duración y curva para que estén sincronizadas. */
-@keyframes distance-swing {
-  0%,
-  100% {
-    width: 1.5rem;
-  }
-  50% {
-    width: 6rem;
-  }
-}
-
-@keyframes attraction-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 44px 10px color-mix(in srgb, var(--accent) 50%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 8px 0 color-mix(in srgb, var(--accent) 12%, transparent);
-  }
-}
-
-.animate-distance-swing {
-  width: 3.5rem;
-  animation: distance-swing 3.6s ease-in-out infinite;
-}
-
-.animate-attraction-glow {
-  animation: attraction-glow 3.6s ease-in-out infinite;
-}
-
-/* Reveal: los pasos aparecen al hacer scroll. El atributo lo pone el
-   componente Reveal desde el cliente; sin JS, o con movimiento reducido, el
-   contenido simplemente está visible. */
-[data-reveal] {
-  transition:
-    opacity 0.8s ease-out,
-    transform 0.8s ease-out;
-}
-
-[data-reveal="hidden"] {
-  opacity: 0;
-  transform: translateY(2rem);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-scroll-cue,
-  .animate-distance-swing,
-  .animate-attraction-glow {
+  .animate-scroll-cue {
     animation: none;
-  }
-
-  .animate-attraction-glow {
-    box-shadow: 0 0 24px 4px color-mix(in srgb, var(--accent) 30%, transparent);
-  }
-
-  [data-reveal] {
-    transition: none;
   }
 }
