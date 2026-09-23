@@ -1,9 +1,16 @@
-export default function NextStepButton() {
+type NextStepButtonProps = {
+  onClick: () => void;
+  disabled: boolean;
+};
+
+export default function NextStepButton({ onClick, disabled }: NextStepButtonProps) {
   return (
     <div className="absolute inset-x-0 bottom-8 flex justify-center">
       <button
         type="button"
-        className="inline-flex items-center gap-2 rounded-full border border-accent/60 px-6 py-3 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-background"
+        onClick={onClick}
+        disabled={disabled}
+        className="inline-flex items-center gap-2 rounded-full border border-accent/60 px-6 py-3 text-sm font-medium text-accent transition-colors enabled:hover:bg-accent enabled:hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
       >
         Siguiente
         <svg

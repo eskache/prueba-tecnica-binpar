@@ -88,7 +88,11 @@ numéricamente cuando dos cuerpos casi se solapan.
   introducción" tiene el texto demasiado largo y el tooltip de `Term` (invisible pero
   presente en el layout) se sale por el lado. A 375px no ocurre.
 - La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
-  Ese botón y "Saltar introducción" son solo visuales por ahora, y todavía no hay un
-  segundo paso al que avanzar.
+  Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto y las variables de
+  la fórmula que ya se han explicado, que se muestran arriba. Hoy hay dos pasos
+  (cuerpo y masa, con la `m` en azul); en el último, "Siguiente" queda desactivado.
+- "Saltar introducción" sigue siendo solo visual.
+- En móviles muy cortos (unos 568px de alto) la `m` de la fórmula queda casi pegada al
+  contenido, sin llegar a solaparse.
 - La simulación (motor, hook y componente) está construida y probada, pero no se
   muestra en ninguna página: se montará como uno de los pasos cuando existan.

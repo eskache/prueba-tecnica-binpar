@@ -2,12 +2,18 @@
 
 import { useId, useState } from "react";
 
+const COLOR_CLASSES = {
+  accent: "text-accent decoration-accent/50",
+  mass: "text-mass decoration-mass/50",
+};
+
 type TermProps = {
   word: string;
   definition: string;
+  color?: keyof typeof COLOR_CLASSES;
 };
 
-export default function Term({ word, definition }: TermProps) {
+export default function Term({ word, definition, color = "accent" }: TermProps) {
   const [open, setOpen] = useState(false);
   const tooltipId = useId();
 
@@ -21,7 +27,7 @@ export default function Term({ word, definition }: TermProps) {
         onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
-        className="cursor-help font-semibold text-accent underline decoration-accent/50 decoration-dotted underline-offset-4"
+        className={`cursor-help font-semibold underline decoration-dotted underline-offset-4 ${COLOR_CLASSES[color]}`}
       >
         {word}
       </span>
