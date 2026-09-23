@@ -30,7 +30,7 @@ export default function LearningExperience() {
 
   return (
     <section className="relative flex flex-1 items-center justify-center px-6 py-28 sm:px-12">
-      <Formula variables={currentStep.formulaVariables} values={formulaValues} />
+      <Formula parts={currentStep.formulaParts} values={formulaValues} />
 
       <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
         <div className="flex items-center gap-6">

@@ -45,11 +45,12 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   introducción" tiene el texto demasiado largo y el tooltip de `Term` (invisible pero
   presente en el layout) se sale por el lado. A 375px no ocurre.
 - La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
-  Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto y las variables de
-  la fórmula que ya se han explicado, que se muestran arriba. Hoy hay dos pasos
+  Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
+  ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
+  explicado, que se muestran arriba. Hoy hay dos pasos
   (cuerpo y masa, con la `m` en azul); en el último, "Siguiente" queda desactivado.
 - En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo) y la
-  fórmula muestra `m₁` (naranja, como el cuerpo grande) y `m₂` (blanco, como el
+  fórmula muestra `m₁` (naranja, como el cuerpo grande) `×` `m₂` (blanco, como el
   pequeño). Al señalar cualquiera de los dos con el ratón, o al
   enfocarlo con el teclado, ambas se sustituyen por la masa de cada cuerpo. Se muestra
   la masa y no el peso porque `m` es la masa (el peso es una fuerza).

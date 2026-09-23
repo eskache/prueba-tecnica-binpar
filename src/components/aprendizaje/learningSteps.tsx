@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import Term from "@/components/Term";
 import type { BodyData } from "./Body";
-import type { FormulaVariable } from "./Formula";
+import type { FormulaPart } from "./Formula";
 
 export type LearningStep = {
   text: ReactNode;
   /** Los cuerpos que se ven en este paso. */
   bodies: BodyData[];
-  /** Variables de la fórmula que ya se han explicado al llegar a este paso. */
-  formulaVariables: FormulaVariable[];
+  /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
+  formulaParts: FormulaPart[];
 };
 
 export const LEARNING_STEPS: LearningStep[] = [
@@ -24,7 +24,7 @@ export const LEARNING_STEPS: LearningStep[] = [
       </>
     ),
     bodies: [{ id: "large" }],
-    formulaVariables: [],
+    formulaParts: [],
   },
   {
     text: (
@@ -42,6 +42,6 @@ export const LEARNING_STEPS: LearningStep[] = [
       { id: "large", mass: { variable: "mass1", inKg: 100 } },
       { id: "small", mass: { variable: "mass2", inKg: 10 } },
     ],
-    formulaVariables: ["mass1", "mass2"],
+    formulaParts: ["mass1", "times", "mass2"],
   },
 ];
