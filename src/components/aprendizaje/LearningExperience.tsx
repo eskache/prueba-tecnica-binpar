@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import Body, { type BodyData } from "./Body";
 import DistanceLine from "./DistanceLine";
+import FinalStep from "./FinalStep";
 import Formula, { type FormulaValues } from "./Formula";
 import OrbitPreview from "@/components/simulacion/OrbitPreview";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
@@ -58,42 +59,46 @@ export default function LearningExperience() {
     <section className="relative flex flex-1 items-center justify-center px-6 pb-24 pt-40 sm:px-12 sm:py-28">
       <Formula parts={currentStep.formulaParts} values={formulaValues} />
 
-      <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
-        {currentStep.showsOrbitSimulation ? (
-          <OrbitPreview
-            className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
-            hasThirdBody={currentStep.hasThirdBody}
-          />
-        ) : (
-          <div className="flex items-center gap-6">
-            {currentStep.bodies.map((body, index) => (
-              <Fragment key={body.id}>
-                {/* La línea de distancia va entre el primer cuerpo y el segundo. */}
-                {index > 0 && currentStep.distanceInMeters && (
-                  <DistanceLine
-                    inMeters={currentStep.distanceInMeters}
-                    onHoverChange={setIsPointingAtDistanceLine}
+      {currentStep.isFinalStep ? (
+        <FinalStep>{currentStep.text({ onGravityHover: setIsPointingAtGravity })}</FinalStep>
+      ) : (
+        <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
+          {currentStep.showsOrbitSimulation ? (
+            <OrbitPreview
+              className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
+              hasThirdBody={currentStep.hasThirdBody}
+            />
+          ) : (
+            <div className="flex items-center gap-6">
+              {currentStep.bodies.map((body, index) => (
+                <Fragment key={body.id}>
+                  {/* La línea de distancia va entre el primer cuerpo y el segundo. */}
+                  {index > 0 && currentStep.distanceInMeters && (
+                    <DistanceLine
+                      inMeters={currentStep.distanceInMeters}
+                      onHoverChange={setIsPointingAtDistanceLine}
+                    />
+                  )}
+                  <Body
+                    body={body}
+                    onHoverChange={(isHovered) => setPointedBodyId(isHovered ? body.id : null)}
                   />
-                )}
-                <Body
-                  body={body}
-                  onHoverChange={(isHovered) => setPointedBodyId(isHovered ? body.id : null)}
-                />
-              </Fragment>
-            ))}
-          </div>
-        )}
+                </Fragment>
+              ))}
+            </div>
+          )}
 
-        {/* El texto cambia sin navegar a otra página: aria-live hace que se anuncie. */}
-        <div aria-live="polite" className="max-w-xl">
-          <p
-            key={stepIndex}
-            className="text-center text-2xl leading-relaxed text-foreground motion-safe:animate-fade-in sm:text-left sm:text-3xl"
-          >
-            {currentStep.text({ onGravityHover: setIsPointingAtGravity })}
-          </p>
+          {/* El texto cambia sin navegar a otra página: aria-live hace que se anuncie. */}
+          <div aria-live="polite" className="max-w-xl">
+            <p
+              key={stepIndex}
+              className="text-center text-2xl leading-relaxed text-foreground motion-safe:animate-fade-in sm:text-left sm:text-3xl"
+            >
+              {currentStep.text({ onGravityHover: setIsPointingAtGravity })}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <StepNavigation
         onPrevious={goToPreviousStep}

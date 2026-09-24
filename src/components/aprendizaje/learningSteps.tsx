@@ -20,6 +20,8 @@ export type LearningStep = {
   showsOrbitSimulation?: boolean;
   /** Si es true, la simulación de la órbita incluye un tercer cuerpo. */
   hasThirdBody?: boolean;
+  /** Si es true, es la pantalla final: sus preguntas y el paso a la simulación. */
+  isFinalStep?: boolean;
   /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
   formulaParts: FormulaPart[];
 };
@@ -151,6 +153,12 @@ export const LEARNING_STEPS: LearningStep[] = [
     bodies: [],
     showsOrbitSimulation: true,
     hasThirdBody: true,
+    formulaParts: COMPLETE_FORMULA,
+  },
+  {
+    text: () => "¿Crees que eres capaz de encontrar una solución al problema de los 3 cuerpos?",
+    bodies: [],
+    isFinalStep: true,
     formulaParts: COMPLETE_FORMULA,
   },
 ];

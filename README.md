@@ -51,8 +51,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con "Anterior" (desactivados en el último y en el primer paso).
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
-  explicado, que se muestran arriba. Hoy hay seis pasos (cuerpo, masa, gravedad,
-  distancia, velocidad y caos); en el último, "Siguiente" queda desactivado.
+  explicado, que se muestran arriba. Hoy hay siete pasos (cuerpo, masa, gravedad,
+  distancia, velocidad, caos y el final); en el último, "Siguiente" queda desactivado.
 - En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
   el cuerpo blanco se acerca al naranja, acelerando, en un bucle de 8 segundos: aparece
   lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
@@ -132,5 +132,13 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   corta al acercarse demasiado, así que el contorno a veces es solo un arco corto. La
   velocidad elegida en el paso 5 se conserva al pasar al 6. La masa y la posición del
   tercer cuerpo se eligieron a ojo para que el efecto se note: no son reales.
+- Paso 7 (final, `FinalStep`): tres botones con preguntas ("Explícame cómo funcionaría
+  en 3D", "Cuéntame más sobre la historia de la ley de gravitación universal" y, como
+  pregunta extra, "¿Dónde vemos tres cuerpos en la vida real?"), la pregunta grande "¿Crees
+  que eres capaz de encontrar una solución al problema de los 3 cuerpos?" y el botón
+  "Ir a la simulación", que lleva a `/simulacion`. Los tres botones de preguntas todavía
+  no hacen nada: están preparados para la integración con el modelo de lenguaje, que
+  sigue pendiente. La pantalla es distinta a las demás (sin cuerpos ni texto al lado),
+  así que es un componente propio que el paso activa con `isFinalStep`.
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.
