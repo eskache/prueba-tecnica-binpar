@@ -62,7 +62,7 @@ export const LEARNING_STEPS: LearningStep[] = [
       </>
     ),
     bodies: [LARGE_BODY, SMALL_BODY],
-    formulaParts: ["mass1", "timesMasses", "mass2"],
+    formulaParts: ["force", "equals", "mass1", "timesMasses", "mass2"],
   },
   {
     text: ({ onGravityHover }) => (
@@ -78,7 +78,15 @@ export const LEARNING_STEPS: LearningStep[] = [
       </>
     ),
     bodies: [LARGE_BODY, { ...SMALL_BODY, approachesLargeBody: true }],
-    formulaParts: ["constant", "timesConstant", "mass1", "timesMasses", "mass2"],
+    formulaParts: [
+      "force",
+      "equals",
+      "constant",
+      "timesConstant",
+      "mass1",
+      "timesMasses",
+      "mass2",
+    ],
   },
   {
     text: () => (
@@ -96,12 +104,13 @@ export const LEARNING_STEPS: LearningStep[] = [
     // Distancia media entre la Tierra y el Sol.
     distanceInMeters: { mantissa: "1,496", exponent: 11 },
     formulaParts: [
+      "force",
+      "equals",
       "constant",
       "timesConstant",
       "mass1",
       "timesMasses",
       "mass2",
-      "divide",
       "distance",
     ],
   },

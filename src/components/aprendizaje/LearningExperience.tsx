@@ -50,7 +50,9 @@ export default function LearningExperience() {
   }
 
   return (
-    <section className="relative flex flex-1 items-center justify-center px-6 py-28 sm:px-12">
+    // En móvil hay más relleno arriba que abajo: la fórmula ocupa la parte de
+    // arriba y, si no, en pantallas bajas se solaparía con los cuerpos.
+    <section className="relative flex flex-1 items-center justify-center px-6 pb-24 pt-40 sm:px-12 sm:py-28">
       <Formula parts={currentStep.formulaParts} values={formulaValues} />
 
       <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">

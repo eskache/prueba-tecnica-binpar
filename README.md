@@ -64,8 +64,9 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   texto es una función que recibe esos avisos, y `Term` acepta un `onHoverChange`.
 - En el paso de la distancia ("distancia" en azul, con tooltip) los dos cuerpos
   aparecen separados y entre ellos hay una línea azul, del mismo color. La fórmula
-  añade `÷ r` (`G × m₁ × m₂ ÷ r`) y, al señalar la línea con ratón o teclado, la `r` se
-  sustituye por su valor: 1,496 × 10¹¹ m, la distancia media entre la Tierra y el Sol.
+  añade la `r` bajo la raya de la fracción y, al señalar la línea con ratón o teclado,
+  la `r` se sustituye por su valor: 1,496 × 10¹¹ m, la distancia media entre la Tierra
+  y el Sol.
   La línea es un elemento aparte (`DistanceLine`), con una zona de apuntado más alta
   que el trazo y que se engruesa al señalarla. Pendiente: la fórmula real lleva `r²`;
   aquí todavía aparece solo `r`. El azul de la distancia es algo más intenso que el
@@ -80,9 +81,18 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
 - Los tooltips de las palabras explican lo que simbolizan (unidades, qué cuerpo o valor
   representan en la fórmula, por qué `G` tiene ese valor) y evitan repetir lo que otro
   paso ya explica.
-- Con valores en la fórmula la letra es más pequeña y, en móvil, puede pasar a dos
-  líneas. En un móvil bajo (667px de alto), en el paso de la distancia, que es el de
-  más texto, esas dos líneas quedan a 1px de los cuerpos: sin tapar nada, pero justo.
+- La fórmula se escribe como en los libros: `F = G × (m₁ × m₂) / r`, con `G` fuera
+  multiplicando y `m₁ × m₂` sobre `r` en una fracción. Cada pieza declara su sitio
+  (en línea, numerador o denominador, en `Formula.tsx`), y la fórmula se va formando
+  paso a paso: `F = m₁ × m₂`, luego `F = G × m₁ × m₂` y, al llegar `r`, `m₁ × m₂` pasa
+  al numerador. Los lectores de pantalla oyen "dividido entre" en la raya. Pendiente: la
+  fórmula real lleva `r²`; aquí todavía aparece solo `r`.
+- Con valores en la fórmula la letra es más pequeña (para que no se parta en dos
+  líneas) y, en móvil, la fórmula es algo menor y va más arriba. Como ocupa la parte de
+  arriba, en móvil hay más relleno arriba que abajo y el contenido queda unos 32px por
+  debajo del centro; en escritorio sigue exactamente centrado. En 375×667 la fórmula
+  queda al menos a 21px de los cuerpos en el paso más apretado (el de la distancia).
+  En 320×568, el móvil más pequeño, ese paso ya necesita scroll vertical.
 - Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
   no hay hover, y tocar un elemento no siempre le da foco (p. ej. en Safari de iOS),
   así que ahí puede no verse la masa.
