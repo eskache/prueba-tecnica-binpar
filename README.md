@@ -68,8 +68,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   la `r²` se sustituye por su valor al cuadrado, (1,496 × 10¹¹)², donde 1,496 × 10¹¹ m es
   la distancia media entre la Tierra y el Sol.
   La línea es un elemento aparte (`DistanceLine`), con una zona de apuntado más alta
-  que el trazo y que se engruesa al señalarla. El azul de la distancia es algo más intenso que el
-  de la palabra "masa" para que no se confundan.
+  que el trazo y que se engruesa al señalarla. La palabra "masa" va en blanco, para
+  que no se confunda con el azul de la distancia. Cada concepto tiene su color: naranja
+  (Sol y `m₁`), blanco (la Tierra, `m₂` y "masa"), violeta (gravedad), azul (distancia),
+  verde (velocidad), turquesa (órbita) y rojo (caos). La palabra "gravedad" explica
+  también que cuanto más cerca están los cuerpos más fuerte es la atracción.
 - En el paso de la masa hay dos cuerpos que, como ejemplo, son el Sol (naranja,
   1,989 × 10³⁰ kg) y la Tierra (blanco, 5,972 × 10²⁴ kg), y la fórmula muestra `m₁`
   (naranja) `×` `m₂` (blanco). Al señalar cualquiera de los dos con el ratón, o al
@@ -97,7 +100,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   así que ahí puede no verse la masa.
 - Al pasar del paso 1 al 2 aparece un segundo cuerpo y el bloque se recentra, por lo
   que el círculo grande se desplaza un poco hacia la izquierda.
-- "Saltar introducción" sigue siendo solo visual.
+- "Saltar introducción" lleva al último paso (el de las preguntas y la simulación), y
+  desaparece en ese paso, igual que "Siguiente".
 - En móviles muy cortos (unos 568px de alto) la `m` de la fórmula queda casi pegada al
   contenido, sin llegar a solaparse.
 - Simulación (en marcha): `src/physics/simulation.ts` es física pura, sin React, en
@@ -119,13 +123,19 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con teclado. Pendiente: alternativa accesible (campos numéricos o flechas),
   reproducir/pausar y sliders de masa.
 - Paso 5 (velocidad): en lugar de los cuerpos aparece la simulación de la órbita
-  (`OrbitPreview`, la misma de `/simulacion`, con el tamaño como prop). La palabra
-  "velocidad" va en verde, que es también el color de la goma al arrastrar, y la fórmula
-  se queda completa. No hay comprobación del resultado ni texto que diga cómo acaba la
-  órbita: la línea discontinua ya enseña la forma (círculo, elipse, caída o escape). En
-  móvil el dibujo es pequeño (160px) para que el paso quepa en 375×667 sin scroll.
-- Paso 6 (caos): la misma simulación con un tercer cuerpo (azul, con la décima parte de
-  la masa del Sol). Como `predictTrajectory` avanza todo el sistema, no hizo falta
+  (`OrbitPreview`, la misma de `/simulacion`, con el tamaño como prop). El texto es "La
+  Tierra no cae hacia el Sol porque se está moviendo de lado con una velocidad lateral
+  (verde), siguiendo una órbita (turquesa)". El tooltip de la velocidad explica por qué
+  la Tierra la tiene (el Sistema Solar nació de una nube que giraba) y el de la órbita
+  qué es, cuándo cambia y cómo probarlo arrastrando la Tierra. La línea discontinua de la
+  órbita es también turquesa, y la goma del arrastre verde. No hay comprobación del
+  resultado ni texto que diga cómo acaba la órbita: la línea ya enseña la forma (círculo,
+  elipse, caída o escape). Los cuerpos se dibujan más grandes que en la primera versión
+  porque se veían muy pequeños, y el dibujo se ajusta más a la órbita. En móvil el
+  dibujo mide 160px y el texto es más pequeño (para todos los pasos) para que el paso
+  quepa en 375×667 sin scroll.
+- Paso 6 (caos): la misma simulación con un tercer cuerpo (rojo, como la palabra
+  "caótica"; con la décima parte de la masa del Sol). Como `predictTrajectory` avanza todo el sistema, no hizo falta
   cambiar la física. Al arrastrar la Tierra, un pequeño cambio de velocidad deforma por
   completo la órbita dibujada, mientras que con dos cuerpos siempre era una elipse. Con
   tres cuerpos los caminos pasan cerca de otro cuerpo con frecuencia y la predicción se
@@ -139,6 +149,7 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   "Ir a la simulación", que lleva a `/simulacion`. Los tres botones de preguntas todavía
   no hacen nada: están preparados para la integración con el modelo de lenguaje, que
   sigue pendiente. La pantalla es distinta a las demás (sin cuerpos ni texto al lado),
-  así que es un componente propio que el paso activa con `isFinalStep`.
+  así que es un componente propio que el paso activa con `isFinalStep`. Aquí no hay
+  botón "Siguiente" ni "Saltar introducción".
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.

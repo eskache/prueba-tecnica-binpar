@@ -8,6 +8,7 @@ import Formula, { type FormulaValues } from "./Formula";
 import OrbitPreview from "@/components/simulacion/OrbitPreview";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
 import { ScientificNotation } from "./scientificNumber";
+import SkipIntroButton from "./SkipIntroButton";
 import StepNavigation from "./StepNavigation";
 
 export default function LearningExperience() {
@@ -53,10 +54,17 @@ export default function LearningExperience() {
     setStepIndex(stepIndex + 1);
   }
 
+  function skipToLastStep() {
+    setStepIndex(LEARNING_STEPS.length - 1);
+  }
+
   return (
     // En móvil hay más relleno arriba que abajo: la fórmula ocupa la parte de
     // arriba y, si no, en pantallas bajas se solaparía con los cuerpos.
     <section className="relative flex flex-1 items-center justify-center px-6 pb-24 pt-40 sm:px-12 sm:py-28">
+      {/* En el último paso ya no hay introducción que saltar. */}
+      {!isLastStep && <SkipIntroButton onSkip={skipToLastStep} />}
+
       <Formula parts={currentStep.formulaParts} values={formulaValues} />
 
       {currentStep.isFinalStep ? (
@@ -92,7 +100,7 @@ export default function LearningExperience() {
           <div aria-live="polite" className="max-w-xl">
             <p
               key={stepIndex}
-              className="text-center text-2xl leading-relaxed text-foreground motion-safe:animate-fade-in sm:text-left sm:text-3xl"
+              className="text-center text-xl leading-snug text-foreground motion-safe:animate-fade-in sm:text-left sm:text-3xl sm:leading-relaxed"
             >
               {currentStep.text({ onGravityHover: setIsPointingAtGravity })}
             </p>

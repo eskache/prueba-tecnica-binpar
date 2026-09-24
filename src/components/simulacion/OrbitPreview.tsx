@@ -25,13 +25,13 @@ const STEPS_FOR_THREE_ORBITS = 1900;
 
 // Radios de dibujo en unidades de simulación. No están a escala: el Sol real sería
 // invisible a esta distancia.
-const SUN_RADIUS = 0.08;
-const EARTH_RADIUS = 0.03;
-const THIRD_BODY_RADIUS = 0.05;
+const SUN_RADIUS = 0.2;
+const EARTH_RADIUS = 0.08;
+const THIRD_BODY_RADIUS = 0.12;
 
 // Zona en la que se detecta el puntero sobre la Tierra: más grande que el dibujo para
 // que sea fácil agarrarla.
-const EARTH_GRAB_RADIUS = 0.1;
+const EARTH_GRAB_RADIUS = 0.16;
 
 // Arrastrar la Tierra hacia atrás una distancia de 0,5 le da velocidad 1, la de una
 // órbita circular. La velocidad máxima está algo por encima de la de escape (√2 ≈ 1,41).
@@ -115,7 +115,7 @@ export default function OrbitPreview({ className, hasThirdBody = false }: OrbitP
   return (
     <svg
       ref={svgRef}
-      viewBox="-1.5 -1.5 3 3"
+      viewBox="-1.25 -1.25 2.5 2.5"
       role="img"
       aria-label="El Sol y la Tierra, con la órbita que la Tierra va a recorrer. Arrastra la Tierra hacia atrás para cambiar su velocidad."
       className={`touch-none ${className}`}
@@ -124,7 +124,7 @@ export default function OrbitPreview({ className, hasThirdBody = false }: OrbitP
       <path
         d={toPathData(trajectory)}
         fill="none"
-        className="stroke-muted"
+        className="stroke-orbit"
         strokeWidth={2}
         strokeDasharray="6 6"
         vectorEffect="non-scaling-stroke"
@@ -135,7 +135,7 @@ export default function OrbitPreview({ className, hasThirdBody = false }: OrbitP
           cx={THIRD_BODY.position.x}
           cy={THIRD_BODY.position.y}
           r={THIRD_BODY_RADIUS}
-          className="fill-mass"
+          className="fill-chaos"
         />
       )}
 

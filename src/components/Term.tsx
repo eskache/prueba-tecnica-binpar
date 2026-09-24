@@ -4,10 +4,12 @@ import { useId, useLayoutEffect, useRef, useState } from "react";
 
 const COLOR_CLASSES = {
   accent: "text-accent decoration-accent/50",
-  mass: "text-mass decoration-mass/50",
+  neutral: "text-foreground decoration-foreground/50",
   constant: "text-constant decoration-constant/50",
   distance: "text-distance decoration-distance/50",
   velocity: "text-velocity decoration-velocity/50",
+  orbit: "text-orbit decoration-orbit/50",
+  chaos: "text-chaos decoration-chaos/50",
 };
 
 // Separación mínima entre el tooltip y el borde de la pantalla.

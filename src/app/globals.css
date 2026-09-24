@@ -8,10 +8,11 @@
   --accent: #f5a524;
   --accent-soft: rgba(245, 165, 36, 0.12);
   --accent-glow: rgba(245, 165, 36, 0.45);
-  --mass: #5eb1ff;
   --constant: #b389f9;
   --distance: #4f8bff;
   --velocity: #4ade80;
+  --orbit: #2dd4bf;
+  --chaos: #ff5d5d;
   --border: #23232f;
 }
 
@@ -22,10 +23,11 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
-  --color-mass: var(--mass);
   --color-constant: var(--constant);
   --color-distance: var(--distance);
   --color-velocity: var(--velocity);
+  --color-orbit: var(--orbit);
+  --color-chaos: var(--chaos);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

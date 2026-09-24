@@ -73,7 +73,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         Todos los cuerpos tienen{" "}
         <Term
           word="masa"
-          color="mass"
+          color="neutral"
           definition="La cantidad de materia que tiene un cuerpo, medida en kilogramos. En la fórmula es la m: m₁ es la masa del Sol y m₂ la de la Tierra."
         />
         .
@@ -89,7 +89,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         <Term
           word="gravedad"
           color="constant"
-          definition="Solo se nota con objetos enormes, como planetas o estrellas: entre objetos pequeños es demasiado débil para percibirse. Lo marca G, la constante universal (6,674 × 10⁻¹¹ en unidades del SI), un valor diminuto que se ha medido experimentalmente: no se sabe por qué es justo ese número."
+          definition="Cuanto más cerca están los cuerpos, más fuerte es la atracción; cuanto más lejos, más débil. Solo se nota con objetos enormes, como planetas o estrellas: entre objetos pequeños es demasiado débil. Lo marca G, la constante universal (6,674 × 10⁻¹¹ en unidades del SI), un valor diminuto que se ha medido experimentalmente: no se sabe por qué es justo ese número."
           onHoverChange={onGravityHover}
         />
         .
@@ -126,11 +126,17 @@ export const LEARNING_STEPS: LearningStep[] = [
   {
     text: () => (
       <>
-        La Tierra no cae al Sol porque además se mueve de lado: es su{" "}
+        La Tierra no cae hacia el Sol porque se está moviendo de lado con una{" "}
         <Term
-          word="velocidad"
+          word="velocidad lateral"
           color="velocity"
-          definition="Lo rápido que se mueve un cuerpo y hacia dónde. Arrastra la Tierra hacia atrás, como una goma: cuanto más tires, más rápido saldrá disparada en sentido contrario, y la línea discontinua muestra la órbita que recorrería."
+          definition="La velocidad con la que la Tierra se mueve de lado, sin acercarse ni alejarse del Sol. La tiene desde su origen: el Sistema Solar nació de una nube de gas y polvo que giraba, y ese giro se conservó en los planetas."
+        />
+        , siguiendo una{" "}
+        <Term
+          word="órbita"
+          color="orbit"
+          definition="El camino que sigue un cuerpo al girar alrededor de otro. Cambia si cambia su velocidad: más lenta y cae hacia el Sol, más rápida y se estira o se escapa. Arrastra la Tierra hacia atrás, como una goma, para probarlo."
         />
         .
       </>
@@ -145,6 +151,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         Con un tercer cuerpo la órbita se vuelve{" "}
         <Term
           word="caótica"
+          color="chaos"
           definition="Un cambio mínimo en el punto de partida acaba dando un resultado completamente distinto. Con tres cuerpos no existe una fórmula general para la órbita: solo se puede calcular paso a paso, como hace esta simulación."
         />
         : arrastra la Tierra y mira cómo cambia.

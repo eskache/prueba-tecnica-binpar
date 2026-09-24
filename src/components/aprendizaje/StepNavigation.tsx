@@ -2,7 +2,7 @@ const PREVIOUS_BUTTON_CLASSES =
   "inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted transition-colors enabled:hover:border-accent/60 enabled:hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40";
 
 const NEXT_BUTTON_CLASSES =
-  "inline-flex items-center gap-2 rounded-full border border-accent/60 px-6 py-3 text-sm font-medium text-accent transition-colors enabled:hover:bg-accent enabled:hover:text-background disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex items-center gap-2 rounded-full border border-accent/60 px-6 py-3 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-background";
 
 const ARROW_PATHS = {
   left: "M19 12H5M11 6l-6 6 6 6",
@@ -51,15 +51,13 @@ export default function StepNavigation({
         Anterior
       </button>
 
-      <button
-        type="button"
-        onClick={onNext}
-        disabled={isLastStep}
-        className={NEXT_BUTTON_CLASSES}
-      >
-        Siguiente
-        <ArrowIcon direction="right" />
-      </button>
+      {/* En el último paso no hay a dónde seguir: el botón se esconde. */}
+      {!isLastStep && (
+        <button type="button" onClick={onNext} className={NEXT_BUTTON_CLASSES}>
+          Siguiente
+          <ArrowIcon direction="right" />
+        </button>
+      )}
     </div>
   );
 }
