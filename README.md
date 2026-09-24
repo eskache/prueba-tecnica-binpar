@@ -106,24 +106,36 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   contenido, sin llegar a solaparse.
 - Simulación (en marcha): `src/physics/simulation.ts` es física pura, sin React, en
   unidades normalizadas (distancia Tierra–Sol = 1, masa del Sol = 1, G = 1).
-  `predictTrajectory` adelanta la simulación sobre una copia y devuelve por dónde pasará
-  un cuerpo; la escena `/simulacion` (sin pestaña todavía) dibuja esa órbita con una
-  velocidad que el usuario cambia arrastrando la Tierra hacia atrás, como una goma: la
-  velocidad es la contraria al arrastre (0,5 de arrastre = velocidad 1, la de la órbita
-  circular; máximo 1,6, por encima de la de escape, √2). Se dibuja la goma mientras se
-  arrastra y la órbita se recalcula en cada movimiento. Usa Pointer Events, así que
-  vale también para táctil. La predicción se corta si el cuerpo choca con el Sol
-  (`collisionDistance`), porque cerca de él la atracción se dispara.
+  `predictTrajectories` adelanta la simulación sobre una copia y devuelve por dónde
+  pasará cada cuerpo, y se corta si dos cuerpos chocan (`COLLISION_DISTANCE`), porque
+  cerca de otro cuerpo la atracción se dispara.
   Avanza con el método leapfrog y no con el de Euler (que es más
   simple): Euler acumula error en cada vuelta y con la velocidad de una órbita circular
   la distancia al Sol pasaba de 1 a 1,29 en tres vueltas, abriendo la órbita en espiral;
   con leapfrog se mantiene en 1,000. La explicación está en un comentario de
   `simulation.ts`. Comprobado: con velocidad 0,72 el punto más cercano al Sol sale a
-  0,351, igual que en la fórmula de la elipse. Limitación: arrastrar no se puede hacer
-  con teclado. Pendiente: alternativa accesible (campos numéricos o flechas),
-  reproducir/pausar y sliders de masa.
+  0,351, igual que en la fórmula de la elipse.
+- Escena de simulación (`OrbitScene`, en `/simulacion`, sin pestaña todavía): el Sol
+  (naranja) y la Tierra (blanca), con la simulación en pausa al empezar. Se puede
+  arrastrar cualquiera de los dos hacia atrás, como una goma: la velocidad es la
+  contraria al arrastre (0,5 de arrastre = velocidad 1, la de la órbita circular;
+  máximo 1,6, por encima de la de escape, √2), se dibuja la goma y la órbita prevista de
+  cada uno (naranja para el Sol, turquesa para la Tierra) se recalcula en cada
+  movimiento. Usa Pointer Events, así que vale también para táctil. "Reproducir" pone
+  todo en marcha, "Pausar" lo detiene donde esté y "Reiniciar" lo devuelve al principio.
+  Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
+  hay que pausar. Si dos cuerpos chocan, se para sola.
+  Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar
+  velocidad) pasan por un reducer (`simulationState.ts`), que es una función pura y no
+  toca React; el bucle de animación solo pide "avanzar" en cada fotograma.
+  Limitaciones: la velocidad de la animación depende de los fotogramas por segundo (3
+  pasos de física por fotograma, unos 3,5 s por vuelta a 60 fps), y arrastrar el Sol
+  con la misma escala que la Tierra es muy brusco (una velocidad de 1 lo aleja de la
+  Tierra enseguida): con arrastres pequeños se controla mejor. Arrastrar no se puede
+  hacer con teclado. Pendiente: alternativa accesible (campos numéricos o flechas) y
+  sliders de masa.
 - Paso 5 (velocidad): en lugar de los cuerpos aparece la simulación de la órbita
-  (`OrbitPreview`, la misma de `/simulacion`, con el tamaño como prop). El texto es "La
+  (`OrbitScene`, la misma de `/simulacion`, pero sin reproducir y solo con la Tierra arrastrable). El texto es "La
   Tierra no cae hacia el Sol porque se está moviendo de lado con una velocidad lateral
   (verde), siguiendo una órbita (turquesa)". El tooltip de la velocidad explica por qué
   la Tierra la tiene (el Sistema Solar nació de una nube que giraba) y el de la órbita
@@ -135,12 +147,12 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   dibujo mide 160px y el texto es más pequeño (para todos los pasos) para que el paso
   quepa en 375×667 sin scroll.
 - Paso 6 (caos): la misma simulación con un tercer cuerpo (rojo, como la palabra
-  "caótica"; con la décima parte de la masa del Sol). Como `predictTrajectory` avanza todo el sistema, no hizo falta
+  "caótica"; con la décima parte de la masa del Sol). Como `predictTrajectories` avanza todo el sistema, no hizo falta
   cambiar la física. Al arrastrar la Tierra, un pequeño cambio de velocidad deforma por
   completo la órbita dibujada, mientras que con dos cuerpos siempre era una elipse. Con
   tres cuerpos los caminos pasan cerca de otro cuerpo con frecuencia y la predicción se
   corta al acercarse demasiado, así que el contorno a veces es solo un arco corto. La
-  velocidad elegida en el paso 5 se conserva al pasar al 6. La masa y la posición del
+  escena empieza de nuevo al pasar del 5 al 6 (velocidad incluida). La masa y la posición del
   tercer cuerpo se eligieron a ojo para que el efecto se note: no son reales.
 - Paso 7 (final, `FinalStep`): tres botones con preguntas ("Explícame cómo funcionaría
   en 3D", "Cuéntame más sobre la historia de la ley de gravitación universal" y, como

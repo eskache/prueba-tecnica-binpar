@@ -1,9 +1,15 @@
-import OrbitPreview from "@/components/simulacion/OrbitPreview";
+import OrbitScene from "@/components/simulacion/OrbitScene";
+import { TWO_BODY_SYSTEM } from "@/components/simulacion/sceneBodies";
 
 export default function SimulacionPage() {
   return (
     <section className="flex flex-1 items-center justify-center px-6 py-16">
-      <OrbitPreview className="h-full max-h-[75vh] w-full max-w-3xl" />
+      <OrbitScene
+        initialBodies={TWO_BODY_SYSTEM}
+        draggableBodyIds={["sun", "earth"]}
+        isPlayable
+        className="size-[min(60vh,40rem)]"
+      />
     </section>
   );
 }

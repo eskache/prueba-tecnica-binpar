@@ -5,7 +5,8 @@ import Body, { type BodyData } from "./Body";
 import DistanceLine from "./DistanceLine";
 import FinalStep from "./FinalStep";
 import Formula, { type FormulaValues } from "./Formula";
-import OrbitPreview from "@/components/simulacion/OrbitPreview";
+import OrbitScene from "@/components/simulacion/OrbitScene";
+import { THREE_BODY_SYSTEM, TWO_BODY_SYSTEM } from "@/components/simulacion/sceneBodies";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
 import { ScientificNotation } from "./scientificNumber";
 import SkipIntroButton from "./SkipIntroButton";
@@ -72,9 +73,12 @@ export default function LearningExperience() {
       ) : (
         <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
           {currentStep.showsOrbitSimulation ? (
-            <OrbitPreview
+            // El key hace que al pasar de dos a tres cuerpos la escena empiece de nuevo.
+            <OrbitScene
+              key={currentStep.hasThirdBody ? "three-bodies" : "two-bodies"}
+              initialBodies={currentStep.hasThirdBody ? THREE_BODY_SYSTEM : TWO_BODY_SYSTEM}
+              draggableBodyIds={["earth"]}
               className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
-              hasThirdBody={currentStep.hasThirdBody}
             />
           ) : (
             <div className="flex items-center gap-6">

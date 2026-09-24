@@ -98,35 +98,40 @@ export function stepSystem(bodies: Body[], timeStep: number): Body[] {
   return kick(moved, timeStep / 2);
 }
 
-/** Adelanta la simulación `steps` pasos sobre una copia y devuelve por dónde pasa el
- * cuerpo indicado, empezando por donde está ahora. Se detiene antes si el cuerpo choca
- * con otro (se acerca a menos de `collisionDistance`): cerca de un cuerpo la atracción
- * se dispara y el resultado dejaría de tener sentido. No modifica los cuerpos recibidos. */
-export function predictTrajectory(
+/** Si algún par de cuerpos está a menos de `collisionDistance`: cerca de otro cuerpo
+ * la atracción se dispara y el resultado dejaría de tener sentido. */
+export function haveCollided(bodies: Body[], collisionDistance: number): boolean {
+  for (let first = 0; first < bodies.length; first++) {
+    for (let second = first + 1; second < bodies.length; second++) {
+      const dx = bodies[second].position.x - bodies[first].position.x;
+      const dy = bodies[second].position.y - bodies[first].position.y;
+      if (Math.hypot(dx, dy) < collisionDistance) return true;
+    }
+  }
+
+  return false;
+}
+
+/** Adelanta la simulación `steps` pasos sobre una copia y devuelve, para cada cuerpo
+ * (por su id), por dónde pasa, empezando por donde está ahora. Se detiene antes si dos
+ * cuerpos chocan. No modifica los cuerpos recibidos. */
+export function predictTrajectories(
   bodies: Body[],
-  bodyId: string,
   steps: number,
   collisionDistance: number,
-): Vector[] {
-  const trajectory: Vector[] = [];
+): Record<string, Vector[]> {
+  const trajectories: Record<string, Vector[]> = {};
+  for (const body of bodies) trajectories[body.id] = [];
+
   let currentBodies = bodies;
 
   for (let step = 0; step <= steps; step++) {
-    const body = currentBodies.find((candidate) => candidate.id === bodyId);
-    if (!body) throw new Error(`No existe el cuerpo "${bodyId}"`);
+    for (const body of currentBodies) trajectories[body.id].push(body.position);
 
-    trajectory.push(body.position);
-
-    const hasCollided = currentBodies.some(
-      (other) =>
-        other.id !== bodyId &&
-        Math.hypot(other.position.x - body.position.x, other.position.y - body.position.y) <
-          collisionDistance,
-    );
-    if (hasCollided) break;
+    if (haveCollided(currentBodies, collisionDistance)) break;
 
     currentBodies = stepSystem(currentBodies, TIME_STEP);
   }
 
-  return trajectory;
+  return trajectories;
 }
