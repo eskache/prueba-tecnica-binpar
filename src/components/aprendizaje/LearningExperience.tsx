@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import Body from "./Body";
+import Body, { type BodyData } from "./Body";
 import DistanceLine from "./DistanceLine";
 import Formula, { type FormulaValues } from "./Formula";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
@@ -10,7 +10,7 @@ import StepNavigation from "./StepNavigation";
 
 export default function LearningExperience() {
   const [stepIndex, setStepIndex] = useState(0);
-  const [isPointingAtBody, setIsPointingAtBody] = useState(false);
+  const [pointedBodyId, setPointedBodyId] = useState<BodyData["id"] | null>(null);
   const [isPointingAtGravity, setIsPointingAtGravity] = useState(false);
   const [isPointingAtDistanceLine, setIsPointingAtDistanceLine] = useState(false);
 
@@ -20,19 +20,16 @@ export default function LearningExperience() {
 
   const formulaValues: FormulaValues = {};
 
-  // Mientras se señala algún cuerpo, la fórmula muestra la masa de cada uno
-  // en lugar de m₁ y m₂.
-  if (isPointingAtBody) {
-    for (const body of currentStep.bodies) {
-      if (body.mass) {
-        formulaValues[body.mass.variable] = <ScientificNotation {...body.mass.inKg} />;
-      }
-    }
+  // Mientras se señala un cuerpo, la fórmula muestra su masa en lugar de su
+  // m₁ o m₂; la del otro cuerpo no cambia.
+  const pointedBody = currentStep.bodies.find((body) => body.id === pointedBodyId);
+  if (pointedBody?.mass) {
+    formulaValues[pointedBody.mass.variable] = <ScientificNotation {...pointedBody.mass.inKg} />;
   }
 
-  // Mientras se señala algún cuerpo o la palabra "gravedad", muestra el valor
-  // real de G. Si el paso todavía no tiene G en la fórmula, esto no se ve.
-  if (isPointingAtBody || isPointingAtGravity) {
+  // Mientras se señala la palabra "gravedad", muestra el valor real de G.
+  // Si el paso todavía no tiene G en la fórmula, esto no se ve.
+  if (isPointingAtGravity) {
     formulaValues.constant = <ScientificNotation {...GRAVITATIONAL_CONSTANT} />;
   }
 
@@ -66,7 +63,10 @@ export default function LearningExperience() {
                   onHoverChange={setIsPointingAtDistanceLine}
                 />
               )}
-              <Body body={body} onHoverChange={setIsPointingAtBody} />
+              <Body
+                body={body}
+                onHoverChange={(isHovered) => setPointedBodyId(isHovered ? body.id : null)}
+              />
             </Fragment>
           ))}
         </div>

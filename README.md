@@ -74,9 +74,10 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
 - En el paso de la masa hay dos cuerpos que, como ejemplo, son el Sol (naranja,
   1,989 × 10³⁰ kg) y la Tierra (blanco, 5,972 × 10²⁴ kg), y la fórmula muestra `m₁`
   (naranja) `×` `m₂` (blanco). Al señalar cualquiera de los dos con el ratón, o al
-  enfocarlo con el teclado, ambas se sustituyen por su masa real en notación científica
-  y sin unidad: los kilogramos ya se indican en el tooltip de "masa". En el paso 3
-  también se sustituye la `G`. Se muestra la masa y no el peso porque `m` es la masa
+  enfocarlo con el teclado, solo se sustituye la masa de ese cuerpo (`m₁` para el
+  naranja, `m₂` para el blanco) por su valor real en notación científica y sin unidad:
+  los kilogramos ya se indican en el tooltip de "masa". La `G` solo se sustituye al
+  señalar la palabra "gravedad". Se muestra la masa y no el peso porque `m` es la masa
   (el peso es una fuerza).
 - Los tooltips de las palabras explican lo que simbolizan (unidades, qué cuerpo o valor
   representan en la fórmula, por qué `G` tiene ese valor) y evitan repetir lo que otro
