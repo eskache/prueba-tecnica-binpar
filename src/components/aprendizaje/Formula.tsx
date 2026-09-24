@@ -50,8 +50,15 @@ type FormulaProps = {
 
 /** Las piezas de la fórmula que ya se han explicado, en la parte superior. */
 export default function Formula({ parts, values = {} }: FormulaProps) {
+  // Los valores reales son mucho más largos que los símbolos: se escriben algo
+  // más pequeños para que la fórmula no se desborde.
+  const isShowingValues = parts.some((part) => values[part] !== undefined);
+  const sizeClasses = isShowingValues ? "text-xl sm:text-4xl" : "text-3xl sm:text-5xl";
+
   return (
-    <div className="absolute inset-x-0 top-20 flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 px-4 text-3xl font-medium sm:text-5xl">
+    <div
+      className={`absolute inset-x-0 top-20 flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 px-4 font-medium ${sizeClasses}`}
+    >
       {parts.map((part) => (
         <span
           key={part}

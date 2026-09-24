@@ -62,11 +62,15 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   "gravedad" (con ratón o teclado) la `G` se sustituye por su valor real,
   6,674 × 10⁻¹¹. Para que el texto de un paso pueda avisar de eso a la pantalla, el
   texto es una función que recibe esos avisos, y `Term` acepta un `onHoverChange`.
-- En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo) y la
-  fórmula muestra `m₁` (naranja, como el cuerpo grande) `×` `m₂` (blanco, como el
-  pequeño). Al señalar cualquiera de los dos con el ratón, o al
-  enfocarlo con el teclado, ambas se sustituyen por la masa de cada cuerpo. Se muestra
-  la masa y no el peso porque `m` es la masa (el peso es una fuerza).
+- En el paso de la masa hay dos cuerpos que, como ejemplo, son el Sol (naranja,
+  1,989 × 10³⁰ kg) y la Tierra (blanco, 5,972 × 10²⁴ kg), y la fórmula muestra `m₁`
+  (naranja) `×` `m₂` (blanco). Al señalar cualquiera de los dos con el ratón, o al
+  enfocarlo con el teclado, ambas se sustituyen por su masa real en notación científica
+  y sin unidad: los kilogramos ya se indican en el tooltip de "masa". En el paso 3
+  también se sustituye la `G`. Se muestra la masa y no el peso porque `m` es la masa
+  (el peso es una fuerza).
+- Con valores en la fórmula la letra es más pequeña y, en móvil, puede pasar a dos
+  líneas (sin llegar a solaparse con el contenido).
 - Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
   no hay hover, y tocar un elemento no siempre le da foco (p. ej. en Safari de iOS),
   así que ahí puede no verse la masa.

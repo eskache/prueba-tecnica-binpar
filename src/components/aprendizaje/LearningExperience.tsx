@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Body from "./Body";
 import Formula, { type FormulaValues } from "./Formula";
-import { GRAVITATIONAL_CONSTANT_VALUE, LEARNING_STEPS } from "./learningSteps";
+import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
+import { ScientificNotation } from "./scientificNumber";
 import StepNavigation from "./StepNavigation";
 
 export default function LearningExperience() {
@@ -22,14 +23,15 @@ export default function LearningExperience() {
   if (isPointingAtBody) {
     for (const body of currentStep.bodies) {
       if (body.mass) {
-        formulaValues[body.mass.variable] = `${body.mass.inKg} kg`;
+        formulaValues[body.mass.variable] = <ScientificNotation {...body.mass.inKg} />;
       }
     }
   }
 
-  // Mientras se señala la palabra "gravedad", muestra el valor real de G.
-  if (isPointingAtGravity) {
-    formulaValues.constant = GRAVITATIONAL_CONSTANT_VALUE;
+  // Mientras se señala algún cuerpo o la palabra "gravedad", muestra el valor
+  // real de G. Si el paso todavía no tiene G en la fórmula, esto no se ve.
+  if (isPointingAtBody || isPointingAtGravity) {
+    formulaValues.constant = <ScientificNotation {...GRAVITATIONAL_CONSTANT} />;
   }
 
   function goToPreviousStep() {

@@ -1,10 +1,11 @@
 import type { FormulaVariable } from "./Formula";
+import { spokenScientificNumber, type ScientificNumber } from "./scientificNumber";
 
 export type BodyData = {
   id: "large" | "small";
-  /** La masa del cuerpo y la variable de la fórmula que la representa.
-   * Solo se conoce cuando el paso ya habla de masa. */
-  mass?: { variable: FormulaVariable; inKg: number };
+  /** La masa del cuerpo, en kilogramos, y la variable de la fórmula que la
+   * representa. Solo se conoce cuando el paso ya habla de masa. */
+  mass?: { variable: FormulaVariable; inKg: ScientificNumber };
   /** Si el cuerpo se acerca al grande, atraído por él. */
   approachesLargeBody?: boolean;
 };
@@ -57,7 +58,7 @@ export default function Body({ body, onHoverChange }: BodyProps) {
         <div
           role="img"
           tabIndex={0}
-          aria-label={`Cuerpo con una masa de ${body.mass.inKg} kg`}
+          aria-label={`Cuerpo con una masa de ${spokenScientificNumber(body.mass.inKg)} kilogramos`}
           onMouseEnter={() => onHoverChange(true)}
           onMouseLeave={() => onHoverChange(false)}
           onFocus={() => onHoverChange(true)}

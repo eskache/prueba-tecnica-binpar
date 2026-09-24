@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Term from "@/components/Term";
 import type { BodyData } from "./Body";
 import type { FormulaPart } from "./Formula";
+import type { ScientificNumber } from "./scientificNumber";
 
 /** Lo que el texto de un paso puede avisar a la pantalla. */
 export type StepTextCallbacks = {
@@ -18,15 +19,18 @@ export type LearningStep = {
 };
 
 // Valor real de la constante de gravitación universal, en unidades del SI.
-export const GRAVITATIONAL_CONSTANT_VALUE: ReactNode = (
-  <>
-    6,674 × 10<sup>−11</sup>
-  </>
-);
+export const GRAVITATIONAL_CONSTANT: ScientificNumber = { mantissa: "6,674", exponent: -11 };
 
-// Los dos cuerpos, ya con su masa, a partir del paso en que se habla de ella.
-const LARGE_BODY: BodyData = { id: "large", mass: { variable: "mass1", inKg: 100 } };
-const SMALL_BODY: BodyData = { id: "small", mass: { variable: "mass2", inKg: 10 } };
+// Como ejemplo, el cuerpo naranja es el Sol y el blanco la Tierra: sus masas
+// reales, en kilogramos, a partir del paso en que se habla de ellas.
+const LARGE_BODY: BodyData = {
+  id: "large",
+  mass: { variable: "mass1", inKg: { mantissa: "1,989", exponent: 30 } },
+};
+const SMALL_BODY: BodyData = {
+  id: "small",
+  mass: { variable: "mass2", inKg: { mantissa: "5,972", exponent: 24 } },
+};
 
 export const LEARNING_STEPS: LearningStep[] = [
   {
