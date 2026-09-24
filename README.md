@@ -51,8 +51,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con "Anterior" (desactivados en el último y en el primer paso).
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
-  explicado, que se muestran arriba. Hoy hay cuatro pasos (cuerpo, masa, gravedad y
-  distancia); en el último, "Siguiente" queda desactivado.
+  explicado, que se muestran arriba. Hoy hay cinco pasos (cuerpo, masa, gravedad,
+  distancia y velocidad); en el último, "Siguiente" queda desactivado.
 - En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
   el cuerpo blanco se acerca al naranja, acelerando, en un bucle de 8 segundos: aparece
   lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
@@ -118,5 +118,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   0,351, igual que en la fórmula de la elipse. Limitación: arrastrar no se puede hacer
   con teclado. Pendiente: alternativa accesible (campos numéricos o flechas),
   reproducir/pausar y sliders de masa.
+- Paso 5 (velocidad): en lugar de los cuerpos aparece la simulación de la órbita
+  (`OrbitPreview`, la misma de `/simulacion`, con el tamaño como prop). La palabra
+  "velocidad" va en verde, que es también el color de la goma al arrastrar, y la fórmula
+  se queda completa. No hay comprobación del resultado ni texto que diga cómo acaba la
+  órbita: la línea discontinua ya enseña la forma (círculo, elipse, caída o escape). En
+  móvil el dibujo es pequeño (160px) para que el paso quepa en 375×667 sin scroll.
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.

@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import Body, { type BodyData } from "./Body";
 import DistanceLine from "./DistanceLine";
 import Formula, { type FormulaValues } from "./Formula";
+import OrbitPreview from "@/components/simulacion/OrbitPreview";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
 import { ScientificNotation } from "./scientificNumber";
 import StepNavigation from "./StepNavigation";
@@ -58,23 +59,27 @@ export default function LearningExperience() {
       <Formula parts={currentStep.formulaParts} values={formulaValues} />
 
       <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
-        <div className="flex items-center gap-6">
-          {currentStep.bodies.map((body, index) => (
-            <Fragment key={body.id}>
-              {/* La línea de distancia va entre el primer cuerpo y el segundo. */}
-              {index > 0 && currentStep.distanceInMeters && (
-                <DistanceLine
-                  inMeters={currentStep.distanceInMeters}
-                  onHoverChange={setIsPointingAtDistanceLine}
+        {currentStep.showsOrbitSimulation ? (
+          <OrbitPreview className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96" />
+        ) : (
+          <div className="flex items-center gap-6">
+            {currentStep.bodies.map((body, index) => (
+              <Fragment key={body.id}>
+                {/* La línea de distancia va entre el primer cuerpo y el segundo. */}
+                {index > 0 && currentStep.distanceInMeters && (
+                  <DistanceLine
+                    inMeters={currentStep.distanceInMeters}
+                    onHoverChange={setIsPointingAtDistanceLine}
+                  />
+                )}
+                <Body
+                  body={body}
+                  onHoverChange={(isHovered) => setPointedBodyId(isHovered ? body.id : null)}
                 />
-              )}
-              <Body
-                body={body}
-                onHoverChange={(isHovered) => setPointedBodyId(isHovered ? body.id : null)}
-              />
-            </Fragment>
-          ))}
-        </div>
+              </Fragment>
+            ))}
+          </div>
+        )}
 
         {/* El texto cambia sin navegar a otra página: aria-live hace que se anuncie. */}
         <div aria-live="polite" className="max-w-xl">

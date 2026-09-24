@@ -46,9 +46,14 @@ function toPathData(points: Vector[]): string {
     .join(" ");
 }
 
+type OrbitPreviewProps = {
+  /** Clases que dan el tamaño al dibujo, que es cuadrado. */
+  className: string;
+};
+
 /** Dibuja el Sol, la Tierra y la órbita que la Tierra recorrerá con su velocidad.
  * Arrastrando la Tierra hacia atrás, como una goma, se cambia esa velocidad. */
-export default function OrbitPreview() {
+export default function OrbitPreview({ className }: OrbitPreviewProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [earthVelocity, setEarthVelocity] = useState<Vector>({ x: 0, y: CIRCULAR_ORBIT_SPEED });
   const [isDragging, setIsDragging] = useState(false);
@@ -100,7 +105,7 @@ export default function OrbitPreview() {
       viewBox="-1.5 -1.5 3 3"
       role="img"
       aria-label="El Sol y la Tierra, con la órbita que la Tierra va a recorrer. Arrastra la Tierra hacia atrás para cambiar su velocidad."
-      className="h-full max-h-[75vh] w-full max-w-3xl touch-none"
+      className={`touch-none ${className}`}
     >
       {/* vectorEffect deja el grosor y el guion en píxeles, sin escalarlos con el viewBox. */}
       <path
@@ -119,7 +124,7 @@ export default function OrbitPreview() {
           y1={EARTH_POSITION.y}
           x2={rubberBandEnd.x}
           y2={rubberBandEnd.y}
-          className="stroke-foreground"
+          className="stroke-velocity"
           strokeWidth={2}
           vectorEffect="non-scaling-stroke"
         />

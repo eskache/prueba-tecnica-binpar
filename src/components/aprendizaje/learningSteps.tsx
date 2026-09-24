@@ -16,6 +16,8 @@ export type LearningStep = {
   bodies: BodyData[];
   /** Si se indica, se dibuja entre los dos cuerpos la línea de su distancia. */
   distanceInMeters?: ScientificNumber;
+  /** Si es true, en lugar de los cuerpos se muestra la simulación de la órbita. */
+  showsOrbitSimulation?: boolean;
   /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
   formulaParts: FormulaPart[];
 };
@@ -33,6 +35,18 @@ const SMALL_BODY: BodyData = {
   id: "small",
   mass: { variable: "mass2", inKg: { mantissa: "5,972", exponent: 24 } },
 };
+
+// La fórmula completa, tal como queda al final del paso de la distancia.
+const COMPLETE_FORMULA: FormulaPart[] = [
+  "force",
+  "equals",
+  "constant",
+  "timesConstant",
+  "mass1",
+  "timesMasses",
+  "mass2",
+  "distance",
+];
 
 export const LEARNING_STEPS: LearningStep[] = [
   {
@@ -103,15 +117,22 @@ export const LEARNING_STEPS: LearningStep[] = [
     bodies: [LARGE_BODY, SMALL_BODY],
     // Distancia media entre la Tierra y el Sol.
     distanceInMeters: { mantissa: "1,496", exponent: 11 },
-    formulaParts: [
-      "force",
-      "equals",
-      "constant",
-      "timesConstant",
-      "mass1",
-      "timesMasses",
-      "mass2",
-      "distance",
-    ],
+    formulaParts: COMPLETE_FORMULA,
+  },
+  {
+    text: () => (
+      <>
+        La Tierra no cae al Sol porque además se mueve de lado: es su{" "}
+        <Term
+          word="velocidad"
+          color="velocity"
+          definition="Lo rápido que se mueve un cuerpo y hacia dónde. Arrastra la Tierra hacia atrás, como una goma: cuanto más tires, más rápido saldrá disparada en sentido contrario, y la línea discontinua muestra la órbita que recorrería."
+        />
+        .
+      </>
+    ),
+    bodies: [],
+    showsOrbitSimulation: true,
+    formulaParts: COMPLETE_FORMULA,
   },
 ];
