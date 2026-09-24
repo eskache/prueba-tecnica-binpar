@@ -1,16 +1,26 @@
 import type { ReactNode } from "react";
 
-/** Las piezas de la fórmula que representan un valor, como la masa de un cuerpo. */
-export type FormulaVariable = "mass1" | "mass2";
+/** Las piezas de la fórmula que representan un valor: masas y constante. */
+export type FormulaVariable = "mass1" | "mass2" | "constant";
 
-/** Todo lo que puede aparecer en la fórmula: variables y operadores. */
-export type FormulaPart = FormulaVariable | "times";
+/** Todo lo que puede aparecer en la fórmula: variables y operadores. Cada
+ * operador tiene su propio nombre para que ninguna pieza se repita. */
+export type FormulaPart = FormulaVariable | "timesConstant" | "timesMasses";
 
 /** Valores concretos que se muestran momentáneamente en lugar del símbolo. */
-export type FormulaValues = Partial<Record<FormulaPart, string>>;
+export type FormulaValues = Partial<Record<FormulaPart, ReactNode>>;
 
-// Cada masa tiene el color del cuerpo al que representa (ver Body.tsx).
+// Cada masa tiene el color del cuerpo al que representa (ver Body.tsx), y la
+// constante el violeta con el que se destaca la palabra "gravedad".
 const PARTS: Record<FormulaPart, { symbol: ReactNode; colorClass: string }> = {
+  constant: {
+    symbol: "G",
+    colorClass: "text-constant",
+  },
+  timesConstant: {
+    symbol: "×",
+    colorClass: "text-muted",
+  },
   mass1: {
     symbol: (
       <>
@@ -19,7 +29,7 @@ const PARTS: Record<FormulaPart, { symbol: ReactNode; colorClass: string }> = {
     ),
     colorClass: "text-accent",
   },
-  times: {
+  timesMasses: {
     symbol: "×",
     colorClass: "text-muted",
   },
@@ -41,7 +51,7 @@ type FormulaProps = {
 /** Las piezas de la fórmula que ya se han explicado, en la parte superior. */
 export default function Formula({ parts, values = {} }: FormulaProps) {
   return (
-    <div className="absolute inset-x-0 top-20 flex justify-center gap-4 text-4xl font-medium sm:text-5xl">
+    <div className="absolute inset-x-0 top-20 flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 px-4 text-3xl font-medium sm:text-5xl">
       {parts.map((part) => (
         <span
           key={part}

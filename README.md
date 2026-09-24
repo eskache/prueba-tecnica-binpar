@@ -56,7 +56,10 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
   cerca y vuelve a empezar. Como al reiniciar es invisible, no se ve ningún salto.
   Con "reducir movimiento" activado no hay animación ni flecha y los cuerpos se
-  quedan en su sitio. La fórmula todavía no incluye la constante `G`.
+  quedan en su sitio. La fórmula pasa a `G × m₁ × m₂`, y al señalar la palabra
+  "gravedad" (con ratón o teclado) la `G` se sustituye por su valor real,
+  6,674 × 10⁻¹¹. Para que el texto de un paso pueda avisar de eso a la pantalla, el
+  texto es una función que recibe esos avisos, y `Term` acepta un `onHoverChange`.
 - En el paso de la masa hay dos cuerpos (100 kg y 10 kg, valores de ejemplo) y la
   fórmula muestra `m₁` (naranja, como el cuerpo grande) `×` `m₂` (blanco, como el
   pequeño). Al señalar cualquiera de los dos con el ratón, o al

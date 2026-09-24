@@ -15,12 +15,24 @@ type TermProps = {
   word: string;
   definition: string;
   color?: keyof typeof COLOR_CLASSES;
+  /** Avisa cuando la palabra pasa a estar señalada (hover o foco) o deja de estarlo. */
+  onHoverChange?: (isHovered: boolean) => void;
 };
 
-export default function Term({ word, definition, color = "accent" }: TermProps) {
+export default function Term({
+  word,
+  definition,
+  color = "accent",
+  onHoverChange,
+}: TermProps) {
   const [open, setOpen] = useState(false);
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const tooltipId = useId();
+
+  function changeOpen(isOpen: boolean) {
+    setOpen(isOpen);
+    onHoverChange?.(isOpen);
+  }
 
   // El tooltip se centra sobre la palabra. Si la palabra está cerca del borde,
   // se saldría de la pantalla, así que lo desplazamos lo justo para que quepa.
@@ -49,10 +61,10 @@ export default function Term({ word, definition, color = "accent" }: TermProps) 
         tabIndex={0}
         role="button"
         aria-describedby={tooltipId}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
+        onMouseEnter={() => changeOpen(true)}
+        onMouseLeave={() => changeOpen(false)}
+        onFocus={() => changeOpen(true)}
+        onBlur={() => changeOpen(false)}
         className={`cursor-help font-semibold underline decoration-dotted underline-offset-4 ${COLOR_CLASSES[color]}`}
       >
         {word}

@@ -3,25 +3,32 @@
 import { useState } from "react";
 import Body from "./Body";
 import Formula, { type FormulaValues } from "./Formula";
-import { LEARNING_STEPS } from "./learningSteps";
+import { GRAVITATIONAL_CONSTANT_VALUE, LEARNING_STEPS } from "./learningSteps";
 import NextStepButton from "./NextStepButton";
 
 export default function LearningExperience() {
   const [stepIndex, setStepIndex] = useState(0);
   const [isPointingAtBody, setIsPointingAtBody] = useState(false);
+  const [isPointingAtGravity, setIsPointingAtGravity] = useState(false);
 
   const currentStep = LEARNING_STEPS[stepIndex];
   const isLastStep = stepIndex === LEARNING_STEPS.length - 1;
 
+  const formulaValues: FormulaValues = {};
+
   // Mientras se señala algún cuerpo, la fórmula muestra la masa de cada uno
   // en lugar de m₁ y m₂.
-  const formulaValues: FormulaValues = {};
   if (isPointingAtBody) {
     for (const body of currentStep.bodies) {
       if (body.mass) {
         formulaValues[body.mass.variable] = `${body.mass.inKg} kg`;
       }
     }
+  }
+
+  // Mientras se señala la palabra "gravedad", muestra el valor real de G.
+  if (isPointingAtGravity) {
+    formulaValues.constant = GRAVITATIONAL_CONSTANT_VALUE;
   }
 
   function goToNextStep() {
@@ -45,7 +52,7 @@ export default function LearningExperience() {
             key={stepIndex}
             className="text-center text-2xl leading-relaxed text-foreground motion-safe:animate-fade-in sm:text-left sm:text-3xl"
           >
-            {currentStep.text}
+            {currentStep.text({ onGravityHover: setIsPointingAtGravity })}
           </p>
         </div>
       </div>

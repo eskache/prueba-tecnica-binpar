@@ -3,13 +3,26 @@ import Term from "@/components/Term";
 import type { BodyData } from "./Body";
 import type { FormulaPart } from "./Formula";
 
+/** Lo que el texto de un paso puede avisar a la pantalla. */
+export type StepTextCallbacks = {
+  /** La palabra "gravedad" se ha señalado (true) o ha dejado de estarlo (false). */
+  onGravityHover: (isHovered: boolean) => void;
+};
+
 export type LearningStep = {
-  text: ReactNode;
+  text: (callbacks: StepTextCallbacks) => ReactNode;
   /** Los cuerpos que se ven en este paso. */
   bodies: BodyData[];
   /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
   formulaParts: FormulaPart[];
 };
+
+// Valor real de la constante de gravitación universal, en unidades del SI.
+export const GRAVITATIONAL_CONSTANT_VALUE: ReactNode = (
+  <>
+    6,674 × 10<sup>−11</sup>
+  </>
+);
 
 // Los dos cuerpos, ya con su masa, a partir del paso en que se habla de ella.
 const LARGE_BODY: BodyData = { id: "large", mass: { variable: "mass1", inKg: 100 } };
@@ -17,7 +30,7 @@ const SMALL_BODY: BodyData = { id: "small", mass: { variable: "mass2", inKg: 10 
 
 export const LEARNING_STEPS: LearningStep[] = [
   {
-    text: (
+    text: () => (
       <>
         Esto es un{" "}
         <Term
@@ -31,7 +44,7 @@ export const LEARNING_STEPS: LearningStep[] = [
     formulaParts: [],
   },
   {
-    text: (
+    text: () => (
       <>
         Todos los cuerpos tienen{" "}
         <Term
@@ -43,21 +56,22 @@ export const LEARNING_STEPS: LearningStep[] = [
       </>
     ),
     bodies: [LARGE_BODY, SMALL_BODY],
-    formulaParts: ["mass1", "times", "mass2"],
+    formulaParts: ["mass1", "timesMasses", "mass2"],
   },
   {
-    text: (
+    text: ({ onGravityHover }) => (
       <>
         Todos los cuerpos se atraen entre sí debido a la{" "}
         <Term
           word="gravedad"
           color="constant"
           definition="La atracción que ejercen entre sí todos los cuerpos con masa. Cuánto atraen depende de sus masas, de la distancia que los separa y de una constante universal, siempre la misma, que se representa con la letra G."
+          onHoverChange={onGravityHover}
         />
         .
       </>
     ),
     bodies: [LARGE_BODY, { ...SMALL_BODY, approachesLargeBody: true }],
-    formulaParts: ["mass1", "times", "mass2"],
+    formulaParts: ["constant", "timesConstant", "mass1", "timesMasses", "mass2"],
   },
 ];
