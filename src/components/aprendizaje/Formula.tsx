@@ -16,7 +16,7 @@ export type FormulaPart =
 /** Valores concretos que se muestran momentáneamente en lugar del símbolo. */
 export type FormulaValues = Partial<Record<FormulaPart, ReactNode>>;
 
-/** Dónde va cada pieza, como se escribe en los libros: F = G × (m₁ × m₂) / r
+/** Dónde va cada pieza, como se escribe en los libros: F = G × (m₁ × m₂) / r²
  * - "main": en línea, antes de la fracción.
  * - "numerator" y "denominator": arriba y abajo de la fracción. */
 type Slot = "main" | "numerator" | "denominator";
@@ -50,7 +50,15 @@ const PARTS: Record<FormulaPart, PartDefinition> = {
     colorClass: "text-foreground",
     slot: "numerator",
   },
-  distance: { symbol: "r", colorClass: "text-distance", slot: "denominator" },
+  distance: {
+    symbol: (
+      <>
+        r<sup>2</sup>
+      </>
+    ),
+    colorClass: "text-distance",
+    slot: "denominator",
+  },
 };
 
 type FormulaProps = {

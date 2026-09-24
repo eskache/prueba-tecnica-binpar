@@ -64,12 +64,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   texto es una función que recibe esos avisos, y `Term` acepta un `onHoverChange`.
 - En el paso de la distancia ("distancia" en azul, con tooltip) los dos cuerpos
   aparecen separados y entre ellos hay una línea azul, del mismo color. La fórmula
-  añade la `r` bajo la raya de la fracción y, al señalar la línea con ratón o teclado,
-  la `r` se sustituye por su valor: 1,496 × 10¹¹ m, la distancia media entre la Tierra
-  y el Sol.
+  añade la `r²` bajo la raya de la fracción y, al señalar la línea con ratón o teclado,
+  la `r²` se sustituye por su valor al cuadrado, (1,496 × 10¹¹)², donde 1,496 × 10¹¹ m es
+  la distancia media entre la Tierra y el Sol.
   La línea es un elemento aparte (`DistanceLine`), con una zona de apuntado más alta
-  que el trazo y que se engruesa al señalarla. Pendiente: la fórmula real lleva `r²`;
-  aquí todavía aparece solo `r`. El azul de la distancia es algo más intenso que el
+  que el trazo y que se engruesa al señalarla. El azul de la distancia es algo más intenso que el
   de la palabra "masa" para que no se confundan.
 - En el paso de la masa hay dos cuerpos que, como ejemplo, son el Sol (naranja,
   1,989 × 10³⁰ kg) y la Tierra (blanco, 5,972 × 10²⁴ kg), y la fórmula muestra `m₁`
@@ -82,12 +81,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
 - Los tooltips de las palabras explican lo que simbolizan (unidades, qué cuerpo o valor
   representan en la fórmula, por qué `G` tiene ese valor) y evitan repetir lo que otro
   paso ya explica.
-- La fórmula se escribe como en los libros: `F = G × (m₁ × m₂) / r`, con `G` fuera
-  multiplicando y `m₁ × m₂` sobre `r` en una fracción. Cada pieza declara su sitio
+- La fórmula se escribe como en los libros: `F = G × (m₁ × m₂) / r²`, con `G` fuera
+  multiplicando y `m₁ × m₂` sobre `r²` en una fracción. Cada pieza declara su sitio
   (en línea, numerador o denominador, en `Formula.tsx`), y la fórmula se va formando
-  paso a paso: `F = m₁ × m₂`, luego `F = G × m₁ × m₂` y, al llegar `r`, `m₁ × m₂` pasa
-  al numerador. Los lectores de pantalla oyen "dividido entre" en la raya. Pendiente: la
-  fórmula real lleva `r²`; aquí todavía aparece solo `r`.
+  paso a paso: `F = m₁ × m₂`, luego `F = G × m₁ × m₂` y, al llegar `r²`, `m₁ × m₂` pasa
+  al numerador. Los lectores de pantalla oyen "dividido entre" en la raya.
 - Con valores en la fórmula la letra es más pequeña (para que no se parta en dos
   líneas) y, en móvil, la fórmula es algo menor y va más arriba. Como ocupa la parte de
   arriba, en móvil hay más relleno arriba que abajo y el contenido queda unos 32px por

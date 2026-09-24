@@ -33,9 +33,14 @@ export default function LearningExperience() {
     formulaValues.constant = <ScientificNotation {...GRAVITATIONAL_CONSTANT} />;
   }
 
-  // Mientras se señala la línea que une los cuerpos, muestra el valor de la r.
+  // Mientras se señala la línea que une los cuerpos, muestra el valor de r,
+  // entre paréntesis y elevado al cuadrado como en la fórmula.
   if (isPointingAtDistanceLine && currentStep.distanceInMeters) {
-    formulaValues.distance = <ScientificNotation {...currentStep.distanceInMeters} />;
+    formulaValues.distance = (
+      <>
+        (<ScientificNotation {...currentStep.distanceInMeters} />)<sup>2</sup>
+      </>
+    );
   }
 
   function goToPreviousStep() {
