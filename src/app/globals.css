@@ -10,6 +10,7 @@
   --accent-glow: rgba(245, 165, 36, 0.45);
   --mass: #5eb1ff;
   --constant: #b389f9;
+  --distance: #4f8bff;
   --border: #23232f;
 }
 
@@ -22,6 +23,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-mass: var(--mass);
   --color-constant: var(--constant);
+  --color-distance: var(--distance);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

@@ -51,8 +51,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con "Anterior" (desactivados en el último y en el primer paso).
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
-  explicado, que se muestran arriba. Hoy hay tres pasos (cuerpo, masa y gravedad); en
-  el último, "Siguiente" queda desactivado.
+  explicado, que se muestran arriba. Hoy hay cuatro pasos (cuerpo, masa, gravedad y
+  distancia); en el último, "Siguiente" queda desactivado.
 - En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
   el cuerpo blanco se acerca al naranja, acelerando, en un bucle de 8 segundos: aparece
   lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
@@ -62,6 +62,14 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   "gravedad" (con ratón o teclado) la `G` se sustituye por su valor real,
   6,674 × 10⁻¹¹. Para que el texto de un paso pueda avisar de eso a la pantalla, el
   texto es una función que recibe esos avisos, y `Term` acepta un `onHoverChange`.
+- En el paso de la distancia ("distancia" en azul, con tooltip) los dos cuerpos
+  aparecen separados y entre ellos hay una línea azul, del mismo color. La fórmula
+  añade `÷ r` (`G × m₁ × m₂ ÷ r`) y, al señalar la línea con ratón o teclado, la `r` se
+  sustituye por su valor: 1,496 × 10¹¹ m, la distancia media entre la Tierra y el Sol.
+  La línea es un elemento aparte (`DistanceLine`), con una zona de apuntado más alta
+  que el trazo y que se engruesa al señalarla. Pendiente: la fórmula real lleva `r²`;
+  aquí todavía aparece solo `r`. El azul de la distancia es algo más intenso que el
+  de la palabra "masa" para que no se confundan.
 - En el paso de la masa hay dos cuerpos que, como ejemplo, son el Sol (naranja,
   1,989 × 10³⁰ kg) y la Tierra (blanco, 5,972 × 10²⁴ kg), y la fórmula muestra `m₁`
   (naranja) `×` `m₂` (blanco). Al señalar cualquiera de los dos con el ratón, o al
@@ -73,7 +81,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   representan en la fórmula, por qué `G` tiene ese valor) y evitan repetir lo que otro
   paso ya explica.
 - Con valores en la fórmula la letra es más pequeña y, en móvil, puede pasar a dos
-  líneas (sin llegar a solaparse con el contenido).
+  líneas. En un móvil bajo (667px de alto), en el paso de la distancia, que es el de
+  más texto, esas dos líneas quedan a 1px de los cuerpos: sin tapar nada, pero justo.
 - Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
   no hay hover, y tocar un elemento no siempre le da foco (p. ej. en Safari de iOS),
   así que ahí puede no verse la masa.

@@ -14,6 +14,8 @@ export type LearningStep = {
   text: (callbacks: StepTextCallbacks) => ReactNode;
   /** Los cuerpos que se ven en este paso. */
   bodies: BodyData[];
+  /** Si se indica, se dibuja entre los dos cuerpos la línea de su distancia. */
+  distanceInMeters?: ScientificNumber;
   /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
   formulaParts: FormulaPart[];
 };
@@ -77,5 +79,30 @@ export const LEARNING_STEPS: LearningStep[] = [
     ),
     bodies: [LARGE_BODY, { ...SMALL_BODY, approachesLargeBody: true }],
     formulaParts: ["constant", "timesConstant", "mass1", "timesMasses", "mass2"],
+  },
+  {
+    text: () => (
+      <>
+        La fuerza con la que se atraen depende de la{" "}
+        <Term
+          word="distancia"
+          color="distance"
+          definition="La separación entre los centros de los dos cuerpos, medida en metros. En la fórmula es la r. Aquí es la que separa a la Tierra del Sol: unos 150 millones de kilómetros."
+        />{" "}
+        a la que se encuentren.
+      </>
+    ),
+    bodies: [LARGE_BODY, SMALL_BODY],
+    // Distancia media entre la Tierra y el Sol.
+    distanceInMeters: { mantissa: "1,496", exponent: 11 },
+    formulaParts: [
+      "constant",
+      "timesConstant",
+      "mass1",
+      "timesMasses",
+      "mass2",
+      "divide",
+      "distance",
+    ],
   },
 ];

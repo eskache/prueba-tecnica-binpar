@@ -6,6 +6,7 @@ const COLOR_CLASSES = {
   accent: "text-accent decoration-accent/50",
   mass: "text-mass decoration-mass/50",
   constant: "text-constant decoration-constant/50",
+  distance: "text-distance decoration-distance/50",
 };
 
 // Separación mínima entre el tooltip y el borde de la pantalla.

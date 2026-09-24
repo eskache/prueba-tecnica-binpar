@@ -1,17 +1,18 @@
 import type { ReactNode } from "react";
 
-/** Las piezas de la fórmula que representan un valor: masas y constante. */
-export type FormulaVariable = "mass1" | "mass2" | "constant";
+/** Las piezas de la fórmula que representan un valor: masas, constante y distancia. */
+export type FormulaVariable = "mass1" | "mass2" | "constant" | "distance";
 
 /** Todo lo que puede aparecer en la fórmula: variables y operadores. Cada
  * operador tiene su propio nombre para que ninguna pieza se repita. */
-export type FormulaPart = FormulaVariable | "timesConstant" | "timesMasses";
+export type FormulaPart = FormulaVariable | "timesConstant" | "timesMasses" | "divide";
 
 /** Valores concretos que se muestran momentáneamente en lugar del símbolo. */
 export type FormulaValues = Partial<Record<FormulaPart, ReactNode>>;
 
-// Cada masa tiene el color del cuerpo al que representa (ver Body.tsx), y la
-// constante el violeta con el que se destaca la palabra "gravedad".
+// Cada masa tiene el color del cuerpo al que representa (ver Body.tsx), la
+// constante el violeta de la palabra "gravedad" y la distancia el azul de la
+// palabra "distancia" y de la línea que separa los cuerpos.
 const PARTS: Record<FormulaPart, { symbol: ReactNode; colorClass: string }> = {
   constant: {
     symbol: "G",
@@ -40,6 +41,14 @@ const PARTS: Record<FormulaPart, { symbol: ReactNode; colorClass: string }> = {
       </>
     ),
     colorClass: "text-foreground",
+  },
+  divide: {
+    symbol: "÷",
+    colorClass: "text-muted",
+  },
+  distance: {
+    symbol: "r",
+    colorClass: "text-distance",
   },
 };
 

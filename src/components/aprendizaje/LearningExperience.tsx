@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Body from "./Body";
+import DistanceLine from "./DistanceLine";
 import Formula, { type FormulaValues } from "./Formula";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
 import { ScientificNotation } from "./scientificNumber";
@@ -11,6 +12,7 @@ export default function LearningExperience() {
   const [stepIndex, setStepIndex] = useState(0);
   const [isPointingAtBody, setIsPointingAtBody] = useState(false);
   const [isPointingAtGravity, setIsPointingAtGravity] = useState(false);
+  const [isPointingAtDistanceLine, setIsPointingAtDistanceLine] = useState(false);
 
   const currentStep = LEARNING_STEPS[stepIndex];
   const isFirstStep = stepIndex === 0;
@@ -34,6 +36,11 @@ export default function LearningExperience() {
     formulaValues.constant = <ScientificNotation {...GRAVITATIONAL_CONSTANT} />;
   }
 
+  // Mientras se señala la línea que une los cuerpos, muestra el valor de la r.
+  if (isPointingAtDistanceLine && currentStep.distanceInMeters) {
+    formulaValues.distance = <ScientificNotation {...currentStep.distanceInMeters} />;
+  }
+
   function goToPreviousStep() {
     setStepIndex(stepIndex - 1);
   }
@@ -48,8 +55,17 @@ export default function LearningExperience() {
 
       <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
         <div className="flex items-center gap-6">
-          {currentStep.bodies.map((body) => (
-            <Body key={body.id} body={body} onHoverChange={setIsPointingAtBody} />
+          {currentStep.bodies.map((body, index) => (
+            <Fragment key={body.id}>
+              {/* La línea de distancia va entre el primer cuerpo y el segundo. */}
+              {index > 0 && currentStep.distanceInMeters && (
+                <DistanceLine
+                  inMeters={currentStep.distanceInMeters}
+                  onHoverChange={setIsPointingAtDistanceLine}
+                />
+              )}
+              <Body body={body} onHoverChange={setIsPointingAtBody} />
+            </Fragment>
           ))}
         </div>
 
