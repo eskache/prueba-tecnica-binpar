@@ -18,6 +18,8 @@ export type LearningStep = {
   distanceInMeters?: ScientificNumber;
   /** Si es true, en lugar de los cuerpos se muestra la simulación de la órbita. */
   showsOrbitSimulation?: boolean;
+  /** Si es true, la simulación de la órbita incluye un tercer cuerpo. */
+  hasThirdBody?: boolean;
   /** Piezas de la fórmula que ya se han explicado al llegar a este paso, en orden. */
   formulaParts: FormulaPart[];
 };
@@ -133,6 +135,22 @@ export const LEARNING_STEPS: LearningStep[] = [
     ),
     bodies: [],
     showsOrbitSimulation: true,
+    formulaParts: COMPLETE_FORMULA,
+  },
+  {
+    text: () => (
+      <>
+        Con un tercer cuerpo la órbita se vuelve{" "}
+        <Term
+          word="caótica"
+          definition="Un cambio mínimo en el punto de partida acaba dando un resultado completamente distinto. Con tres cuerpos no existe una fórmula general para la órbita: solo se puede calcular paso a paso, como hace esta simulación."
+        />
+        : arrastra la Tierra y mira cómo cambia.
+      </>
+    ),
+    bodies: [],
+    showsOrbitSimulation: true,
+    hasThirdBody: true,
     formulaParts: COMPLETE_FORMULA,
   },
 ];

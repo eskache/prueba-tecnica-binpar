@@ -10,6 +10,15 @@ const CIRCULAR_ORBIT_SPEED = 1;
 const SUN: Body = { id: "sun", mass: 1, position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 } };
 const EARTH_POSITION: Vector = { x: 1, y: 0 };
 
+// Un tercer cuerpo opcional, con bastante masa (la décima parte del Sol) para que su
+// atracción cambie de verdad la órbita de la Tierra. Gira en el mismo sentido que ella.
+const THIRD_BODY: Body = {
+  id: "third",
+  mass: 0.1,
+  position: { x: -0.7, y: 0 },
+  velocity: { x: 0, y: -0.9 },
+};
+
 // Una vuelta completa dura 2π unidades de tiempo, unos 628 pasos de 0,01: tres vueltas
 // son unos 1900 pasos.
 const STEPS_FOR_THREE_ORBITS = 1900;
@@ -18,6 +27,7 @@ const STEPS_FOR_THREE_ORBITS = 1900;
 // invisible a esta distancia.
 const SUN_RADIUS = 0.08;
 const EARTH_RADIUS = 0.03;
+const THIRD_BODY_RADIUS = 0.05;
 
 // Zona en la que se detecta el puntero sobre la Tierra: más grande que el dibujo para
 // que sea fácil agarrarla.
@@ -49,11 +59,13 @@ function toPathData(points: Vector[]): string {
 type OrbitPreviewProps = {
   /** Clases que dan el tamaño al dibujo, que es cuadrado. */
   className: string;
+  /** Si es true, además del Sol y la Tierra hay un tercer cuerpo. */
+  hasThirdBody?: boolean;
 };
 
 /** Dibuja el Sol, la Tierra y la órbita que la Tierra recorrerá con su velocidad.
  * Arrastrando la Tierra hacia atrás, como una goma, se cambia esa velocidad. */
-export default function OrbitPreview({ className }: OrbitPreviewProps) {
+export default function OrbitPreview({ className, hasThirdBody = false }: OrbitPreviewProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [earthVelocity, setEarthVelocity] = useState<Vector>({ x: 0, y: CIRCULAR_ORBIT_SPEED });
   const [isDragging, setIsDragging] = useState(false);
@@ -65,8 +77,9 @@ export default function OrbitPreview({ className }: OrbitPreviewProps) {
       position: EARTH_POSITION,
       velocity: earthVelocity,
     };
-    return predictTrajectory([SUN, earth], "earth", STEPS_FOR_THREE_ORBITS, SUN_RADIUS + EARTH_RADIUS);
-  }, [earthVelocity]);
+    const bodies = hasThirdBody ? [SUN, earth, THIRD_BODY] : [SUN, earth];
+    return predictTrajectory(bodies, "earth", STEPS_FOR_THREE_ORBITS, SUN_RADIUS + EARTH_RADIUS);
+  }, [earthVelocity, hasThirdBody]);
 
   /** Dónde está el puntero, en las unidades del dibujo y no en píxeles de pantalla. */
   function pointerPosition(event: PointerEvent): Vector {
@@ -117,6 +130,14 @@ export default function OrbitPreview({ className }: OrbitPreviewProps) {
         vectorEffect="non-scaling-stroke"
       />
       <circle cx={0} cy={0} r={SUN_RADIUS} className="fill-accent" />
+      {hasThirdBody && (
+        <circle
+          cx={THIRD_BODY.position.x}
+          cy={THIRD_BODY.position.y}
+          r={THIRD_BODY_RADIUS}
+          className="fill-mass"
+        />
+      )}
 
       {isDragging && (
         <line

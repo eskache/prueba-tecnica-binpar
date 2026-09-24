@@ -51,8 +51,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con "Anterior" (desactivados en el último y en el primer paso).
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
-  explicado, que se muestran arriba. Hoy hay cinco pasos (cuerpo, masa, gravedad,
-  distancia y velocidad); en el último, "Siguiente" queda desactivado.
+  explicado, que se muestran arriba. Hoy hay seis pasos (cuerpo, masa, gravedad,
+  distancia, velocidad y caos); en el último, "Siguiente" queda desactivado.
 - En el paso de la gravedad ("gravedad" en violeta, el color de la constante universal)
   el cuerpo blanco se acerca al naranja, acelerando, en un bucle de 8 segundos: aparece
   lejos con una flecha que señala al naranja, se acerca despacio, se desvanece ya
@@ -124,5 +124,13 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   se queda completa. No hay comprobación del resultado ni texto que diga cómo acaba la
   órbita: la línea discontinua ya enseña la forma (círculo, elipse, caída o escape). En
   móvil el dibujo es pequeño (160px) para que el paso quepa en 375×667 sin scroll.
+- Paso 6 (caos): la misma simulación con un tercer cuerpo (azul, con la décima parte de
+  la masa del Sol). Como `predictTrajectory` avanza todo el sistema, no hizo falta
+  cambiar la física. Al arrastrar la Tierra, un pequeño cambio de velocidad deforma por
+  completo la órbita dibujada, mientras que con dos cuerpos siempre era una elipse. Con
+  tres cuerpos los caminos pasan cerca de otro cuerpo con frecuencia y la predicción se
+  corta al acercarse demasiado, así que el contorno a veces es solo un arco corto. La
+  velocidad elegida en el paso 5 se conserva al pasar al 6. La masa y la posición del
+  tercer cuerpo se eligieron a ojo para que el efecto se note: no son reales.
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.

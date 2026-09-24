@@ -60,7 +60,10 @@ export default function LearningExperience() {
 
       <div className="flex w-fit max-w-3xl flex-col items-center gap-12 sm:flex-row sm:gap-20 lg:gap-24">
         {currentStep.showsOrbitSimulation ? (
-          <OrbitPreview className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96" />
+          <OrbitPreview
+            className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
+            hasThirdBody={currentStep.hasThirdBody}
+          />
         ) : (
           <div className="flex items-center gap-6">
             {currentStep.bodies.map((body, index) => (
