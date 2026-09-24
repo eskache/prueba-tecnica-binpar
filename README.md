@@ -104,11 +104,19 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   unidades normalizadas (distancia Tierra–Sol = 1, masa del Sol = 1, G = 1).
   `predictTrajectory` adelanta la simulación sobre una copia y devuelve por dónde pasará
   un cuerpo; la escena `/simulacion` (sin pestaña todavía) dibuja esa órbita con una
-  velocidad fija. Avanza con el método leapfrog y no con el de Euler (que es más
+  velocidad que el usuario cambia arrastrando la Tierra hacia atrás, como una goma: la
+  velocidad es la contraria al arrastre (0,5 de arrastre = velocidad 1, la de la órbita
+  circular; máximo 1,6, por encima de la de escape, √2). Se dibuja la goma mientras se
+  arrastra y la órbita se recalcula en cada movimiento. Usa Pointer Events, así que
+  vale también para táctil. La predicción se corta si el cuerpo choca con el Sol
+  (`collisionDistance`), porque cerca de él la atracción se dispara.
+  Avanza con el método leapfrog y no con el de Euler (que es más
   simple): Euler acumula error en cada vuelta y con la velocidad de una órbita circular
   la distancia al Sol pasaba de 1 a 1,29 en tres vueltas, abriendo la órbita en espiral;
   con leapfrog se mantiene en 1,000. La explicación está en un comentario de
-  `simulation.ts`. Pendiente: arrastrar para dar velocidad,
+  `simulation.ts`. Comprobado: con velocidad 0,72 el punto más cercano al Sol sale a
+  0,351, igual que en la fórmula de la elipse. Limitación: arrastrar no se puede hacer
+  con teclado. Pendiente: alternativa accesible (campos numéricos o flechas),
   reproducir/pausar y sliders de masa.
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.

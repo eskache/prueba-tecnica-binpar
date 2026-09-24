@@ -99,8 +99,15 @@ export function stepSystem(bodies: Body[], timeStep: number): Body[] {
 }
 
 /** Adelanta la simulación `steps` pasos sobre una copia y devuelve por dónde pasa el
- * cuerpo indicado, empezando por donde está ahora. No modifica los cuerpos recibidos. */
-export function predictTrajectory(bodies: Body[], bodyId: string, steps: number): Vector[] {
+ * cuerpo indicado, empezando por donde está ahora. Se detiene antes si el cuerpo choca
+ * con otro (se acerca a menos de `collisionDistance`): cerca de un cuerpo la atracción
+ * se dispara y el resultado dejaría de tener sentido. No modifica los cuerpos recibidos. */
+export function predictTrajectory(
+  bodies: Body[],
+  bodyId: string,
+  steps: number,
+  collisionDistance: number,
+): Vector[] {
   const trajectory: Vector[] = [];
   let currentBodies = bodies;
 
@@ -109,6 +116,15 @@ export function predictTrajectory(bodies: Body[], bodyId: string, steps: number)
     if (!body) throw new Error(`No existe el cuerpo "${bodyId}"`);
 
     trajectory.push(body.position);
+
+    const hasCollided = currentBodies.some(
+      (other) =>
+        other.id !== bodyId &&
+        Math.hypot(other.position.x - body.position.x, other.position.y - body.position.y) <
+          collisionDistance,
+    );
+    if (hasCollided) break;
+
     currentBodies = stepSystem(currentBodies, TIME_STEP);
   }
 
