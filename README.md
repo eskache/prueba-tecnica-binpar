@@ -42,11 +42,13 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   de forma engañosa. Pendiente: quitar el rol y dejar solo `tabIndex` +
   `aria-describedby`, que es el patrón correcto para texto con descripción adjunta.
 - En pantallas de unos 320px de ancho puede aparecer scroll horizontal, porque el
-  botón fijo "Saltar introducción" tiene el texto demasiado largo. A 375px no ocurre.
+  botón fijo "Saltar introducción" tiene el texto demasiado largo, y la barra superior
+  se parte en dos líneas y queda casi tocando ese botón. A 375px no ocurre.
 - El tooltip de `Term` se centra sobre la palabra, pero se desplaza lo justo para no
   salirse de la pantalla, y cerrado no ocupa sitio (`hidden`): un tooltip invisible
   fuera de pantalla bastaba para que toda la página tuviera scroll horizontal.
-- La Parte A es una sola pantalla, sin scroll: se avanza con el botón "Siguiente".
+- La Parte A es una sola pantalla, sin scroll: se avanza con "Siguiente" y se vuelve
+  con "Anterior" (desactivados en el último y en el primer paso).
   Los pasos son datos (`learningSteps.tsx`): cada uno trae su texto, los cuerpos que se
   ven y las piezas de la fórmula (variables y operadores, en orden) que ya se han
   explicado, que se muestran arriba. Hoy hay tres pasos (cuerpo, masa y gravedad); en

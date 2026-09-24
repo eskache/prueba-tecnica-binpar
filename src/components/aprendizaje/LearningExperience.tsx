@@ -4,7 +4,7 @@ import { useState } from "react";
 import Body from "./Body";
 import Formula, { type FormulaValues } from "./Formula";
 import { GRAVITATIONAL_CONSTANT_VALUE, LEARNING_STEPS } from "./learningSteps";
-import NextStepButton from "./NextStepButton";
+import StepNavigation from "./StepNavigation";
 
 export default function LearningExperience() {
   const [stepIndex, setStepIndex] = useState(0);
@@ -12,6 +12,7 @@ export default function LearningExperience() {
   const [isPointingAtGravity, setIsPointingAtGravity] = useState(false);
 
   const currentStep = LEARNING_STEPS[stepIndex];
+  const isFirstStep = stepIndex === 0;
   const isLastStep = stepIndex === LEARNING_STEPS.length - 1;
 
   const formulaValues: FormulaValues = {};
@@ -29,6 +30,10 @@ export default function LearningExperience() {
   // Mientras se señala la palabra "gravedad", muestra el valor real de G.
   if (isPointingAtGravity) {
     formulaValues.constant = GRAVITATIONAL_CONSTANT_VALUE;
+  }
+
+  function goToPreviousStep() {
+    setStepIndex(stepIndex - 1);
   }
 
   function goToNextStep() {
@@ -57,7 +62,12 @@ export default function LearningExperience() {
         </div>
       </div>
 
-      <NextStepButton onClick={goToNextStep} disabled={isLastStep} />
+      <StepNavigation
+        onPrevious={goToPreviousStep}
+        onNext={goToNextStep}
+        isFirstStep={isFirstStep}
+        isLastStep={isLastStep}
+      />
     </section>
   );
 }
