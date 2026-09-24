@@ -104,10 +104,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   unidades normalizadas (distancia Tierra–Sol = 1, masa del Sol = 1, G = 1).
   `predictTrajectory` adelanta la simulación sobre una copia y devuelve por dónde pasará
   un cuerpo; la escena `/simulacion` (sin pestaña todavía) dibuja esa órbita con una
-  velocidad fija. Por ahora usa el método de Euler, que es el más sencillo pero acumula
-  error: con la velocidad de una órbita circular la distancia al Sol pasa de 1 a 1,29 en
-  tres vueltas, y la órbita se abre en espiral. Pendiente: cambiarlo por leapfrog, que
-  mantiene las órbitas cerradas. Pendiente también: arrastrar para dar velocidad,
+  velocidad fija. Avanza con el método leapfrog y no con el de Euler (que es más
+  simple): Euler acumula error en cada vuelta y con la velocidad de una órbita circular
+  la distancia al Sol pasaba de 1 a 1,29 en tres vueltas, abriendo la órbita en espiral;
+  con leapfrog se mantiene en 1,000. La explicación está en un comentario de
+  `simulation.ts`. Pendiente: arrastrar para dar velocidad,
   reproducir/pausar y sliders de masa.
 - Todavía no hay elemento interactivo propio, ni la integración con un
   modelo de lenguaje: son mínimos de la Parte A que faltan.
