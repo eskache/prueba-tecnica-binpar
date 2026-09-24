@@ -39,7 +39,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         Esto es un{" "}
         <Term
           word="cuerpo"
-          definition="En física, un cuerpo es cualquier objeto con masa: un planeta, una estrella, una pelota. Es el protagonista de la gravitación: dos cuerpos con masa siempre se atraen entre sí."
+          definition="Cualquier objeto, de cualquier tamaño: una pelota, un planeta, una estrella. Como ejemplo usaremos el Sol (el cuerpo naranja) y la Tierra (el blanco)."
         />
         .
       </>
@@ -54,7 +54,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         <Term
           word="masa"
           color="mass"
-          definition="La cantidad de materia que tiene un cuerpo. Cuanta más masa, más atrae a los demás. Se mide en kilogramos y en la fórmula se representa con la letra m: m₁ y m₂ son las masas de los dos cuerpos."
+          definition="La cantidad de materia que tiene un cuerpo, medida en kilogramos. En la fórmula es la m: m₁ es la masa del Sol y m₂ la de la Tierra."
         />
         .
       </>
@@ -69,7 +69,7 @@ export const LEARNING_STEPS: LearningStep[] = [
         <Term
           word="gravedad"
           color="constant"
-          definition="La atracción que ejercen entre sí todos los cuerpos con masa. Cuánto atraen depende de sus masas, de la distancia que los separa y de una constante universal, siempre la misma, que se representa con la letra G."
+          definition="Solo se nota con objetos enormes, como planetas o estrellas: entre objetos pequeños es demasiado débil para percibirse. Lo marca G, la constante universal (6,674 × 10⁻¹¹ en unidades del SI), un valor diminuto que se ha medido experimentalmente: no se sabe por qué es justo ese número."
           onHoverChange={onGravityHover}
         />
         .

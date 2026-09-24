@@ -77,7 +77,7 @@ export default function Term({
         id={tooltipId}
         role="tooltip"
         style={{ transform: "translateX(calc(-50% + var(--tooltip-shift, 0px)))" }}
-        className={`pointer-events-none absolute left-1/2 bottom-full z-10 mb-2 w-64 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-normal text-foreground shadow-lg ${
+        className={`pointer-events-none absolute left-1/2 bottom-full z-10 mb-2 w-72 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-normal text-foreground shadow-lg ${
           open ? "block motion-safe:animate-fade-in" : "hidden"
         }`}
       >

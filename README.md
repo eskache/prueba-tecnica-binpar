@@ -69,6 +69,9 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   y sin unidad: los kilogramos ya se indican en el tooltip de "masa". En el paso 3
   también se sustituye la `G`. Se muestra la masa y no el peso porque `m` es la masa
   (el peso es una fuerza).
+- Los tooltips de las palabras explican lo que simbolizan (unidades, qué cuerpo o valor
+  representan en la fórmula, por qué `G` tiene ese valor) y evitan repetir lo que otro
+  paso ya explica.
 - Con valores en la fórmula la letra es más pequeña y, en móvil, puede pasar a dos
   líneas (sin llegar a solaparse con el contenido).
 - Los cuerpos del paso de la masa solo responden a hover o foco. En pantallas táctiles
