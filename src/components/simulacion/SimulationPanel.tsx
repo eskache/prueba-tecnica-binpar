@@ -3,6 +3,8 @@ import {
   spokenScientificNumber,
   toScientificNumber,
 } from "@/components/aprendizaje/scientificNumber";
+import type { Vector } from "@/physics/simulation";
+import LabeledSlider from "./LabeledSlider";
 import { BODY_COLOR_CLASSES, MAX_BODIES, type SceneBody } from "./sceneBodies";
 
 const PLAY_BUTTON_CLASSES =
@@ -18,6 +20,16 @@ const MIN_MASS_EXPONENT = -6;
 const MAX_MASS_EXPONENT = 0;
 const MASS_EXPONENT_STEP = 0.05;
 
+// Cada componente de la velocidad (en x y en y) va de -2 a 2: una órbita circular a
+// distancia 1 del Sol tiene velocidad 1, y la de escape es √2 ≈ 1,41.
+const MAX_VELOCITY_COMPONENT = 2;
+const VELOCITY_STEP = 0.01;
+
+/** Un número con dos decimales y coma decimal, como se escribe en español. */
+function formatDecimal(value: number): string {
+  return value.toFixed(2).replace(".", ",");
+}
+
 type SimulationPanelProps = {
   bodies: SceneBody[];
   isRunning: boolean;
@@ -26,6 +38,7 @@ type SimulationPanelProps = {
   onReset: () => void;
   onAddBody: () => void;
   onMassChange: (bodyId: string, mass: number) => void;
+  onVelocityChange: (bodyId: string, velocity: Vector) => void;
 };
 
 /** El panel de control de la simulación: reproducir, pausar, reiniciar, añadir cuerpos
@@ -38,9 +51,10 @@ export default function SimulationPanel({
   onReset,
   onAddBody,
   onMassChange,
+  onVelocityChange,
 }: SimulationPanelProps) {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl border border-border bg-surface/60 p-5 lg:w-72">
+    <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl border border-border bg-surface/60 p-5 lg:max-h-[calc(100vh-10rem)] lg:w-72 lg:overflow-y-auto">
       <div className="flex flex-wrap gap-3">
         <button type="button" onClick={onToggleRunning} className={PLAY_BUTTON_CLASSES}>
           {isRunning ? "Pausar" : "Reproducir"}
@@ -59,38 +73,62 @@ export default function SimulationPanel({
       </div>
 
       <div>
-        <h2 className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
-          Cuerpos ({bodies.length} de {MAX_BODIES}) · masa en masas solares
+        <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
+          Cuerpos ({bodies.length} de {MAX_BODIES})
         </h2>
-        <ul className="flex flex-col gap-4">
+        <p className="mb-4 mt-1 text-xs text-muted">
+          Masas en masas solares. Velocidades en unidades de la simulación: una órbita circular
+          a distancia 1 del Sol va a velocidad 1.
+        </p>
+
+        <ul className="flex flex-col gap-6">
           {bodies.map((body) => {
             const mass = toScientificNumber(body.mass);
 
             return (
-              <li key={body.id} className="flex flex-col gap-2">
-                <div className="flex items-center justify-between gap-3 text-sm">
-                  <span className="flex items-center gap-3 text-foreground">
-                    <span
-                      aria-hidden="true"
-                      className={`h-3 w-3 rounded-full ${BODY_COLOR_CLASSES[body.color].swatch}`}
-                    />
-                    {body.name}
-                  </span>
-                  <span className="text-xs text-muted">
-                    Masa: <ScientificNotation {...mass} />
-                  </span>
-                </div>
+              <li key={body.id} className="flex flex-col gap-3">
+                <span className="flex items-center gap-3 text-sm text-foreground">
+                  <span
+                    aria-hidden="true"
+                    className={`h-3 w-3 rounded-full ${BODY_COLOR_CLASSES[body.color].swatch}`}
+                  />
+                  {body.name}
+                </span>
 
-                <input
-                  type="range"
+                <LabeledSlider
+                  label="Masa"
+                  valueText={<ScientificNotation {...mass} />}
+                  spokenValue={`${spokenScientificNumber(mass)} masas solares`}
+                  ariaLabel={`Masa de ${body.name}`}
                   min={MIN_MASS_EXPONENT}
                   max={MAX_MASS_EXPONENT}
                   step={MASS_EXPONENT_STEP}
                   value={Math.log10(body.mass)}
-                  onChange={(event) => onMassChange(body.id, 10 ** Number(event.target.value))}
-                  aria-label={`Masa de ${body.name}`}
-                  aria-valuetext={`${spokenScientificNumber(mass)} masas solares`}
-                  className="w-full accent-accent"
+                  onChange={(exponent) => onMassChange(body.id, 10 ** exponent)}
+                />
+
+                <LabeledSlider
+                  label="Velocidad en x"
+                  valueText={formatDecimal(body.velocity.x)}
+                  spokenValue={formatDecimal(body.velocity.x)}
+                  ariaLabel={`Velocidad en x de ${body.name}`}
+                  min={-MAX_VELOCITY_COMPONENT}
+                  max={MAX_VELOCITY_COMPONENT}
+                  step={VELOCITY_STEP}
+                  value={body.velocity.x}
+                  onChange={(x) => onVelocityChange(body.id, { ...body.velocity, x })}
+                />
+
+                <LabeledSlider
+                  label="Velocidad en y"
+                  valueText={formatDecimal(body.velocity.y)}
+                  spokenValue={formatDecimal(body.velocity.y)}
+                  ariaLabel={`Velocidad en y de ${body.name}`}
+                  min={-MAX_VELOCITY_COMPONENT}
+                  max={MAX_VELOCITY_COMPONENT}
+                  step={VELOCITY_STEP}
+                  value={body.velocity.y}
+                  onChange={(y) => onVelocityChange(body.id, { ...body.velocity, y })}
                 />
               </li>
             );

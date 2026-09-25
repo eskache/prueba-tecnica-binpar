@@ -136,8 +136,14 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   van desde millonésimas de la del Sol hasta la del Sol entero y con un slider normal
   quedarían todas pegadas a un extremo. Al cambiar la masa cambia también el radio del
   cuerpo, y con ello cuándo choca. El slider se maneja con las flechas del teclado y
-  lee la masa en voz alta. Pendiente del panel: sliders de velocidad (rapidez y
-  dirección) de cada cuerpo, y quitar cuerpos.
+  lee la masa en voz alta. Cada cuerpo tiene también dos sliders de velocidad, uno para
+  la componente en x y otro para la de y (de −2 a 2, en unidades de la simulación), que
+  se mantienen sincronizados con el arrastre porque ambos escriben la misma velocidad
+  del cuerpo. Se eligieron las componentes y no rapidez y dirección porque las
+  soluciones de tres cuerpos de la galería se dan en componentes (vx, vy). Con el paso
+  de 0,01 no se pueden reproducir con exactitud valores como 0,4662: para eso la
+  galería cargará las condiciones iniciales exactas. Pendiente del panel: sliders de
+  la posición en x y en y de cada cuerpo, y quitar cuerpos.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar
