@@ -5,6 +5,20 @@ export type ScientificNumber = {
   exponent: number;
 };
 
+/** Un número cualquiera en notación científica, con un decimal en la mantisa. */
+export function toScientificNumber(value: number): ScientificNumber {
+  let exponent = Math.floor(Math.log10(value));
+  let mantissa = Math.round((value / 10 ** exponent) * 10) / 10;
+
+  // Redondear puede dar 10,0 (p. ej. 9,96): en ese caso es 1,0 con un exponente más.
+  if (mantissa >= 10) {
+    mantissa /= 10;
+    exponent += 1;
+  }
+
+  return { mantissa: mantissa.toFixed(1).replace(".", ","), exponent };
+}
+
 /** El número escrito como se lee en pantalla, con el exponente en superíndice. */
 export function ScientificNotation({ mantissa, exponent }: ScientificNumber) {
   const sign = exponent < 0 ? "−" : "";

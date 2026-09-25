@@ -184,6 +184,7 @@ export default function OrbitScene({
           onToggleRunning={() => dispatch({ type: "toggleRunning" })}
           onReset={() => dispatch({ type: "reset" })}
           onAddBody={() => dispatch({ type: "addBody" })}
+          onMassChange={(bodyId, mass) => dispatch({ type: "setMass", bodyId, mass })}
         />
       )}
     </div>

@@ -1,5 +1,5 @@
 import { haveCollided, stepSystem, TIME_STEP, type Vector } from "@/physics/simulation";
-import { createNewBody, MAX_BODIES, type SceneBody } from "./sceneBodies";
+import { createNewBody, MAX_BODIES, radiusFromMass, type SceneBody } from "./sceneBodies";
 
 // Cuántos pasos de física se avanzan en cada fotograma. Con 3, una vuelta a la
 // Tierra dura unos 3,5 segundos a 60 fotogramas por segundo. En pantallas de más
@@ -18,6 +18,7 @@ export type SimulationAction =
   | { type: "toggleRunning" }
   | { type: "reset" }
   | { type: "addBody" }
+  | { type: "setMass"; bodyId: string; mass: number }
   | { type: "setVelocity"; bodyId: string; velocity: Vector };
 
 export function createInitialState(initialBodies: SceneBody[]): SimulationState {
@@ -55,6 +56,17 @@ export function simulationReducer(
     case "addBody":
       if (state.bodies.length >= MAX_BODIES) return state;
       return { ...state, bodies: [...state.bodies, createNewBody(state.bodies)] };
+
+    // Al cambiar la masa cambia también el tamaño con el que se dibuja el cuerpo.
+    case "setMass":
+      return {
+        ...state,
+        bodies: state.bodies.map((body) =>
+          body.id === action.bodyId
+            ? { ...body, mass: action.mass, radius: radiusFromMass(action.mass) }
+            : body,
+        ),
+      };
 
     case "setVelocity":
       return {

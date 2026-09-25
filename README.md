@@ -130,8 +130,14 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   donde esté y "Reiniciar" lo devuelve al principio (quitando los añadidos). Cada cuerpo
   añadido es ligero como la Tierra, aparece en uno de tres sitios fijos alrededor del
   Sol (`NEW_BODY_SLOTS`) con la velocidad de una órbita circular, y se puede arrastrar
-  como los demás. Hay un máximo de 5 cuerpos. Pendiente del panel: sliders de masa y de
-  velocidad (rapidez y dirección) de cada cuerpo, y quitar cuerpos.
+  como los demás. Hay un máximo de 5 cuerpos. Cada cuerpo tiene un slider
+  de masa, con el que se puede cambiar en cualquier momento, también en marcha. Es
+  logarítmico (su valor es el exponente, de 10⁻⁶ a 10⁰ masas solares), porque las masas
+  van desde millonésimas de la del Sol hasta la del Sol entero y con un slider normal
+  quedarían todas pegadas a un extremo. Al cambiar la masa cambia también el radio del
+  cuerpo, y con ello cuándo choca. El slider se maneja con las flechas del teclado y
+  lee la masa en voz alta. Pendiente del panel: sliders de velocidad (rapidez y
+  dirección) de cada cuerpo, y quitar cuerpos.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar
