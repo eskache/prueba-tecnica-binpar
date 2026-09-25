@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useReducer, useRef, useState, type PointerEvent } from "react";
-import { predictTrajectories, type Body, type Vector } from "@/physics/simulation";
-import { BODY_STYLES, COLLISION_DISTANCE } from "./sceneBodies";
-import SimulationControls from "./SimulationControls";
+import { predictTrajectories, type Vector } from "@/physics/simulation";
+import { BODY_COLOR_CLASSES, MAX_BODIES, type SceneBody } from "./sceneBodies";
+import SimulationPanel from "./SimulationPanel";
 import { createInitialState, simulationReducer } from "./simulationState";
 
 // Una vuelta completa dura 2π unidades de tiempo, unos 628 pasos de 0,01: tres vueltas
@@ -39,10 +39,12 @@ function toPathData(points: Vector[]): string {
 
 type OrbitSceneProps = {
   /** Los cuerpos con los que empieza la escena. Solo se leen al montarla. */
-  initialBodies: Body[];
-  /** Los cuerpos a los que se les puede dar velocidad arrastrándolos hacia atrás. */
-  draggableBodyIds: string[];
-  /** Si es true, se muestran los botones para reproducir, pausar y reiniciar. */
+  initialBodies: SceneBody[];
+  /** Los cuerpos a los que se les puede dar velocidad arrastrándolos hacia atrás: los
+   * indicados por su id, o todos. */
+  draggableBodies: string[] | "all";
+  /** Si es true, se muestra el panel de control (reproducir, pausar, reiniciar y añadir
+   * cuerpos). */
   isPlayable?: boolean;
   /** Clases que dan el tamaño al dibujo, que es cuadrado. */
   className: string;
@@ -53,7 +55,7 @@ type OrbitSceneProps = {
  * velocidad. La simulación empieza en pausa y, si es reproducible, se pone en marcha. */
 export default function OrbitScene({
   initialBodies,
-  draggableBodyIds,
+  draggableBodies,
   isPlayable = false,
   className,
 }: OrbitSceneProps) {
@@ -77,11 +79,12 @@ export default function OrbitScene({
 
   // Las órbitas previstas solo se dibujan en pausa: en marcha los cuerpos ya se mueven.
   const trajectories = useMemo(
-    () =>
-      state.isRunning
-        ? {}
-        : predictTrajectories(state.bodies, STEPS_FOR_THREE_ORBITS, COLLISION_DISTANCE),
+    () => (state.isRunning ? {} : predictTrajectories(state.bodies, STEPS_FOR_THREE_ORBITS)),
     [state.bodies, state.isRunning],
+  );
+
+  const draggableBodyList = state.bodies.filter(
+    (body) => draggableBodies === "all" || draggableBodies.includes(body.id),
   );
 
   /** Dónde está el puntero, en las unidades del dibujo y no en píxeles de pantalla. */
@@ -97,7 +100,7 @@ export default function OrbitScene({
     setDraggedBodyId(bodyId);
   }
 
-  function drag(body: Body, event: PointerEvent<SVGCircleElement>) {
+  function drag(body: SceneBody, event: PointerEvent<SVGCircleElement>) {
     if (draggedBodyId !== body.id) return;
 
     const pointer = pointerPosition(event);
@@ -112,7 +115,7 @@ export default function OrbitScene({
   const draggedBody = state.bodies.find((body) => body.id === draggedBodyId);
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
       <svg
         ref={svgRef}
         viewBox="-1.25 -1.25 2.5 2.5"
@@ -121,12 +124,12 @@ export default function OrbitScene({
         className={`touch-none ${className}`}
       >
         {/* vectorEffect deja el grosor y el guion en píxeles, sin escalarlos con el viewBox. */}
-        {draggableBodyIds.map((bodyId) => (
+        {draggableBodyList.map((body) => (
           <path
-            key={bodyId}
-            d={toPathData(trajectories[bodyId] ?? [])}
+            key={body.id}
+            d={toPathData(trajectories[body.id] ?? [])}
             fill="none"
-            className={BODY_STYLES[bodyId].outlineClass}
+            className={BODY_COLOR_CLASSES[body.color].outline}
             strokeWidth={2}
             strokeDasharray="6 6"
             vectorEffect="non-scaling-stroke"
@@ -150,36 +153,37 @@ export default function OrbitScene({
             key={body.id}
             cx={body.position.x}
             cy={body.position.y}
-            r={BODY_STYLES[body.id].radius}
-            className={BODY_STYLES[body.id].fillClass}
+            r={body.radius}
+            className={BODY_COLOR_CLASSES[body.color].fill}
           />
         ))}
 
         {/* Círculos invisibles, algo más grandes que los cuerpos, que reciben el arrastre.
             Con la simulación en marcha no se pueden arrastrar. */}
         {!state.isRunning &&
-          state.bodies
-            .filter((body) => draggableBodyIds.includes(body.id))
-            .map((body) => (
-              <circle
-                key={body.id}
-                cx={body.position.x}
-                cy={body.position.y}
-                r={BODY_STYLES[body.id].radius + GRAB_MARGIN}
-                className="cursor-grab fill-transparent"
-                onPointerDown={(event) => startDragging(body.id, event)}
-                onPointerMove={(event) => drag(body, event)}
-                onPointerUp={stopDragging}
-                onPointerCancel={stopDragging}
-              />
-            ))}
+          draggableBodyList.map((body) => (
+            <circle
+              key={body.id}
+              cx={body.position.x}
+              cy={body.position.y}
+              r={body.radius + GRAB_MARGIN}
+              className="cursor-grab fill-transparent"
+              onPointerDown={(event) => startDragging(body.id, event)}
+              onPointerMove={(event) => drag(body, event)}
+              onPointerUp={stopDragging}
+              onPointerCancel={stopDragging}
+            />
+          ))}
       </svg>
 
       {isPlayable && (
-        <SimulationControls
+        <SimulationPanel
+          bodies={state.bodies}
           isRunning={state.isRunning}
+          canAddBody={state.bodies.length < MAX_BODIES}
           onToggleRunning={() => dispatch({ type: "toggleRunning" })}
           onReset={() => dispatch({ type: "reset" })}
+          onAddBody={() => dispatch({ type: "addBody" })}
         />
       )}
     </div>

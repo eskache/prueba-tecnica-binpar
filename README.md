@@ -107,8 +107,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
 - Simulación (en marcha): `src/physics/simulation.ts` es física pura, sin React, en
   unidades normalizadas (distancia Tierra–Sol = 1, masa del Sol = 1, G = 1).
   `predictTrajectories` adelanta la simulación sobre una copia y devuelve por dónde
-  pasará cada cuerpo, y se corta si dos cuerpos chocan (`COLLISION_DISTANCE`), porque
-  cerca de otro cuerpo la atracción se dispara.
+  pasará cada cuerpo, y se corta si dos cuerpos chocan, porque cerca de otro cuerpo la
+  atracción se dispara. Cada cuerpo lleva su radio y dos cuerpos chocan cuando la
+  distancia entre sus centros es menor que la suma de sus radios (pareja por pareja).
+  El radio de dibujo sale de la masa (`radiusFromMass`, con la raíz sexta para que
+  masas tan distintas se vean todas); la física no sabe de colores ni de nombres.
   Avanza con el método leapfrog y no con el de Euler (que es más
   simple): Euler acumula error en cada vuelta y con la velocidad de una órbita circular
   la distancia al Sol pasaba de 1 a 1,29 en tres vueltas, abriendo la órbita en espiral;
@@ -121,8 +124,14 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   contraria al arrastre (0,5 de arrastre = velocidad 1, la de la órbita circular;
   máximo 1,6, por encima de la de escape, √2), se dibuja la goma y la órbita prevista de
   cada uno (naranja para el Sol, turquesa para la Tierra) se recalcula en cada
-  movimiento. Usa Pointer Events, así que vale también para táctil. "Reproducir" pone
-  todo en marcha, "Pausar" lo detiene donde esté y "Reiniciar" lo devuelve al principio.
+  movimiento. Usa Pointer Events, así que vale también para táctil. Un panel de
+  control (`SimulationPanel`) tiene "Reproducir/Pausar", "Reiniciar" y "Añadir cuerpo", y
+  lista los cuerpos con su color. "Reproducir" pone todo en marcha, "Pausar" lo detiene
+  donde esté y "Reiniciar" lo devuelve al principio (quitando los añadidos). Cada cuerpo
+  añadido es ligero como la Tierra, aparece en uno de tres sitios fijos alrededor del
+  Sol (`NEW_BODY_SLOTS`) con la velocidad de una órbita circular, y se puede arrastrar
+  como los demás. Hay un máximo de 5 cuerpos. Pendiente del panel: sliders de masa y de
+  velocidad (rapidez y dirección) de cada cuerpo, y quitar cuerpos.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar

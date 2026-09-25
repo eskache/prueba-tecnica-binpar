@@ -1,5 +1,5 @@
-import { haveCollided, stepSystem, TIME_STEP, type Body, type Vector } from "@/physics/simulation";
-import { COLLISION_DISTANCE } from "./sceneBodies";
+import { haveCollided, stepSystem, TIME_STEP, type Vector } from "@/physics/simulation";
+import { createNewBody, MAX_BODIES, type SceneBody } from "./sceneBodies";
 
 // Cuántos pasos de física se avanzan en cada fotograma. Con 3, una vuelta a la
 // Tierra dura unos 3,5 segundos a 60 fotogramas por segundo. En pantallas de más
@@ -8,8 +8,8 @@ const STEPS_PER_FRAME = 3;
 
 export type SimulationState = {
   /** Cómo estaban los cuerpos al empezar, para poder reiniciar. */
-  initialBodies: Body[];
-  bodies: Body[];
+  initialBodies: SceneBody[];
+  bodies: SceneBody[];
   isRunning: boolean;
 };
 
@@ -17,9 +17,10 @@ export type SimulationAction =
   | { type: "tick" }
   | { type: "toggleRunning" }
   | { type: "reset" }
+  | { type: "addBody" }
   | { type: "setVelocity"; bodyId: string; velocity: Vector };
 
-export function createInitialState(initialBodies: Body[]): SimulationState {
+export function createInitialState(initialBodies: SceneBody[]): SimulationState {
   return { initialBodies, bodies: initialBodies, isRunning: false };
 }
 
@@ -37,7 +38,7 @@ export function simulationReducer(
         bodies = stepSystem(bodies, TIME_STEP);
 
         // Si dos cuerpos chocan, la simulación se para (y se puede reiniciar).
-        if (haveCollided(bodies, COLLISION_DISTANCE)) {
+        if (haveCollided(bodies)) {
           return { ...state, bodies, isRunning: false };
         }
       }
@@ -50,6 +51,10 @@ export function simulationReducer(
 
     case "reset":
       return { ...state, bodies: state.initialBodies, isRunning: false };
+
+    case "addBody":
+      if (state.bodies.length >= MAX_BODIES) return state;
+      return { ...state, bodies: [...state.bodies, createNewBody(state.bodies)] };
 
     case "setVelocity":
       return {

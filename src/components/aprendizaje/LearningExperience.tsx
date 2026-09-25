@@ -77,7 +77,7 @@ export default function LearningExperience() {
             <OrbitScene
               key={currentStep.hasThirdBody ? "three-bodies" : "two-bodies"}
               initialBodies={currentStep.hasThirdBody ? THREE_BODY_SYSTEM : TWO_BODY_SYSTEM}
-              draggableBodyIds={["earth"]}
+              draggableBodies={["earth"]}
               className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
             />
           ) : (

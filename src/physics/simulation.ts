@@ -10,12 +10,20 @@ export type Vector = { x: number; y: number };
 export type Body = {
   id: string;
   mass: number;
+  /** El tamaño del cuerpo, que decide cuándo choca con otro. */
+  radius: number;
   position: Vector;
   velocity: Vector;
 };
 
 /** La constante de gravitación en unidades normalizadas (no es la del SI). */
 const GRAVITATIONAL_CONSTANT = 1;
+
+/** La velocidad con la que un cuerpo describe un círculo perfecto alrededor de otro
+ * mucho más pesado, a la distancia indicada. */
+export function circularOrbitSpeed(centralMass: number, distance: number): number {
+  return Math.sqrt((GRAVITATIONAL_CONSTANT * centralMass) / distance);
+}
 
 /** Cuánto tiempo avanza la simulación en cada paso. Cuanto más pequeño, más preciso. */
 export const TIME_STEP = 0.01;
@@ -65,7 +73,7 @@ function accelerationOn(body: Body, allBodies: Body[]): Vector {
 // los errores de un lado y del otro se compensan en vez de acumularse.
 
 /** Cambia la velocidad de cada cuerpo con la aceleración que sufre durante `timeStep`. */
-function kick(bodies: Body[], timeStep: number): Body[] {
+function kick<T extends Body>(bodies: T[], timeStep: number): T[] {
   return bodies.map((body) => {
     const acceleration = accelerationOn(body, bodies);
 
@@ -80,7 +88,7 @@ function kick(bodies: Body[], timeStep: number): Body[] {
 }
 
 /** Mueve cada cuerpo con su velocidad actual durante `timeStep`. */
-function drift(bodies: Body[], timeStep: number): Body[] {
+function drift<T extends Body>(bodies: T[], timeStep: number): T[] {
   return bodies.map((body) => ({
     ...body,
     position: {
@@ -92,20 +100,22 @@ function drift(bodies: Body[], timeStep: number): Body[] {
 
 /** Avanza el sistema un instante (leapfrog): media patada, movimiento y otra media
  * patada, donde "patada" es el cambio de velocidad por la gravedad. */
-export function stepSystem(bodies: Body[], timeStep: number): Body[] {
+export function stepSystem<T extends Body>(bodies: T[], timeStep: number): T[] {
   const halfKicked = kick(bodies, timeStep / 2);
   const moved = drift(halfKicked, timeStep);
   return kick(moved, timeStep / 2);
 }
 
-/** Si algún par de cuerpos está a menos de `collisionDistance`: cerca de otro cuerpo
- * la atracción se dispara y el resultado dejaría de tener sentido. */
-export function haveCollided(bodies: Body[], collisionDistance: number): boolean {
+/** Si algún par de cuerpos se toca, es decir, si la distancia entre sus centros es menor
+ * que la suma de sus radios: cerca de otro cuerpo la atracción se dispara y el resultado
+ * dejaría de tener sentido. */
+export function haveCollided(bodies: Body[]): boolean {
   for (let first = 0; first < bodies.length; first++) {
     for (let second = first + 1; second < bodies.length; second++) {
       const dx = bodies[second].position.x - bodies[first].position.x;
       const dy = bodies[second].position.y - bodies[first].position.y;
-      if (Math.hypot(dx, dy) < collisionDistance) return true;
+      const touchingDistance = bodies[first].radius + bodies[second].radius;
+      if (Math.hypot(dx, dy) < touchingDistance) return true;
     }
   }
 
@@ -115,10 +125,9 @@ export function haveCollided(bodies: Body[], collisionDistance: number): boolean
 /** Adelanta la simulación `steps` pasos sobre una copia y devuelve, para cada cuerpo
  * (por su id), por dónde pasa, empezando por donde está ahora. Se detiene antes si dos
  * cuerpos chocan. No modifica los cuerpos recibidos. */
-export function predictTrajectories(
-  bodies: Body[],
+export function predictTrajectories<T extends Body>(
+  bodies: T[],
   steps: number,
-  collisionDistance: number,
 ): Record<string, Vector[]> {
   const trajectories: Record<string, Vector[]> = {};
   for (const body of bodies) trajectories[body.id] = [];
@@ -128,7 +137,7 @@ export function predictTrajectories(
   for (let step = 0; step <= steps; step++) {
     for (const body of currentBodies) trajectories[body.id].push(body.position);
 
-    if (haveCollided(currentBodies, collisionDistance)) break;
+    if (haveCollided(currentBodies)) break;
 
     currentBodies = stepSystem(currentBodies, TIME_STEP);
   }

@@ -6,7 +6,7 @@ export default function SimulacionPage() {
     <section className="flex flex-1 items-center justify-center px-6 py-16">
       <OrbitScene
         initialBodies={TWO_BODY_SYSTEM}
-        draggableBodyIds={["sun", "earth"]}
+        draggableBodies="all"
         isPlayable
         className="size-[min(60vh,40rem)]"
       />
