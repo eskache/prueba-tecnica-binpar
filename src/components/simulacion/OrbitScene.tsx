@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useRef, useState, type PointerEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 import { predictTrajectories, type Vector } from "@/physics/simulation";
 import BodiesPanel from "./BodiesPanel";
 import { BODY_COLOR_CLASSES, MAX_BODIES, type SceneBody } from "./sceneBodies";
 import SimulationControls from "./SimulationControls";
 import { createInitialState, simulationReducer } from "./simulationState";
-
-// Hasta cuándo se prevé la órbita: una vuelta a la Tierra dura 2π unidades de tiempo,
-// así que 19 son unas tres vueltas.
-const PREDICTION_DURATION = 19;
 
 // La zona en la que se detecta el puntero sobre un cuerpo es algo más grande que su
 // dibujo, para que sea fácil agarrarlo.
@@ -47,6 +51,12 @@ type OrbitSceneProps = {
   /** Si es false, los cuerpos pueden acercarse tanto como quieran sin que la simulación
    * se pare (por defecto se para cuando dos chocan). */
   stopsOnCollision?: boolean;
+  /** Hasta cuándo se prevé la órbita, en unidades de tiempo de la simulación. */
+  predictionDuration: number;
+  /** Hasta qué distancia del centro se dibuja: el dibujo va de −viewRadius a viewRadius. */
+  viewRadius: number;
+  /** Lo que se muestra sobre el panel de cuerpos (p. ej. la lista de sistemas). */
+  panelHeader?: ReactNode;
   /** Si es true, se muestra el panel de control (reproducir, pausar, reiniciar y añadir
    * cuerpos). */
   isPlayable?: boolean;
@@ -62,6 +72,9 @@ export default function OrbitScene({
   draggableBodies,
   isPlayable = false,
   stopsOnCollision = true,
+  predictionDuration,
+  viewRadius,
+  panelHeader,
   className,
 }: OrbitSceneProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -87,8 +100,8 @@ export default function OrbitScene({
     () =>
       state.isRunning
         ? {}
-        : predictTrajectories(state.bodies, PREDICTION_DURATION, state.stopsOnCollision),
-    [state.bodies, state.isRunning, state.stopsOnCollision],
+        : predictTrajectories(state.bodies, predictionDuration, state.stopsOnCollision),
+    [state.bodies, state.isRunning, state.stopsOnCollision, predictionDuration],
   );
 
   const draggableBodyList = state.bodies.filter(
@@ -136,7 +149,7 @@ export default function OrbitScene({
       >
         <svg
           ref={svgRef}
-          viewBox="-1.25 -1.25 2.5 2.5"
+          viewBox={`${-viewRadius} ${-viewRadius} ${2 * viewRadius} ${2 * viewRadius}`}
           role="img"
           aria-label="Cuerpos que se atraen por la gravedad, con la órbita que van a recorrer. Arrastra un cuerpo hacia atrás para cambiar su velocidad."
           className={`touch-none ${className}`}
@@ -219,19 +232,22 @@ export default function OrbitScene({
       </div>
 
       {isPlayable && (
-        <BodiesPanel
-          bodies={state.bodies}
-          selectedBodyId={state.selectedBodyId}
-          onSelectBody={(bodyId) => dispatch({ type: "selectBody", bodyId })}
-          onRemoveBody={(bodyId) => dispatch({ type: "removeBody", bodyId })}
-          onMassChange={(bodyId, mass) => dispatch({ type: "setMass", bodyId, mass })}
-          onPositionChange={(bodyId, position) =>
-            dispatch({ type: "setPosition", bodyId, position })
-          }
-          onVelocityChange={(bodyId, velocity) =>
-            dispatch({ type: "setVelocity", bodyId, velocity })
-          }
-        />
+        <div className="flex w-full max-w-sm flex-col gap-4 lg:max-h-[calc(100vh-9rem)] lg:w-80">
+          {panelHeader}
+          <BodiesPanel
+            bodies={state.bodies}
+            selectedBodyId={state.selectedBodyId}
+            onSelectBody={(bodyId) => dispatch({ type: "selectBody", bodyId })}
+            onRemoveBody={(bodyId) => dispatch({ type: "removeBody", bodyId })}
+            onMassChange={(bodyId, mass) => dispatch({ type: "setMass", bodyId, mass })}
+            onPositionChange={(bodyId, position) =>
+              dispatch({ type: "setPosition", bodyId, position })
+            }
+            onVelocityChange={(bodyId, velocity) =>
+              dispatch({ type: "setVelocity", bodyId, velocity })
+            }
+          />
+        </div>
       )}
     </div>
   );

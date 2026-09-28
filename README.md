@@ -138,6 +138,17 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   0,07 en el segundo). Las condiciones publicadas tienen 5 o 6 cifras, así que la órbita
   no se cierra con más exactitud. Lagrange es inestable con masas iguales: el error
   numérico acaba deshaciéndola, y así se dice en su descripción.
+- Soluciones en el simulador: en `/simulacion` hay una lista con los nombres (`SolutionPicker`)
+  y, al pulsar uno, se carga esa simulación: "Sol y Tierra" (la de siempre) o una de las
+  seis soluciones de tres cuerpos. Al cambiar, la escena empieza de nuevo (`key`), con
+  el dibujo ajustado a esa solución (`viewRadius`), su órbita prevista de un periodo
+  (`predictionDuration`) y sin parar por choque, porque los cuerpos se acercan mucho.
+  Se pueden reproducir, pausar, reiniciar y cambiar masas, posiciones y velocidades como
+  en cualquier simulación (así se buscan órbitas propias). La solución elegida queda en
+  la dirección (`/simulacion?solucion=butterfly-i`), que se puede compartir: la página la
+  lee en el servidor (`searchParams`) y, al elegir otra, se actualiza con
+  `history.replaceState` sin recargar. Un nombre que no existe se ignora. No hay una
+  galería de tarjetas ni páginas de detalle aparte, por decisión de simplificar.
 - Escena de simulación (`OrbitScene`, en `/simulacion`, sin pestaña todavía): el Sol
   (naranja) y la Tierra (blanca), con la simulación en pausa al empezar. Se puede
   arrastrar cualquiera de los dos hacia atrás, como una goma: la velocidad es la

@@ -78,6 +78,12 @@ const THIRD_BODY: SceneBody = {
   velocity: { x: 0, y: -0.9 },
 };
 
+// Cómo se muestra el sistema del Sol y la Tierra: hasta dónde se prevé la órbita (una
+// vuelta a la Tierra dura 2π unidades de tiempo, así que 19 son unas tres vueltas) y
+// hasta qué distancia del Sol llega el dibujo.
+export const SUN_AND_EARTH_PREDICTION_DURATION = 19;
+export const SUN_AND_EARTH_VIEW_RADIUS = 1.25;
+
 export const TWO_BODY_SYSTEM: SceneBody[] = [SUN, EARTH];
 export const THREE_BODY_SYSTEM: SceneBody[] = [SUN, EARTH, THIRD_BODY];
 

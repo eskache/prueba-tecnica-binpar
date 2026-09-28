@@ -1,15 +1,15 @@
-import OrbitScene from "@/components/simulacion/OrbitScene";
-import { TWO_BODY_SYSTEM } from "@/components/simulacion/sceneBodies";
+import SimulationPlayground from "@/components/simulacion/SimulationPlayground";
+import { findSolution } from "@/data/threeBodySolutions";
 
-export default function SimulacionPage() {
+export default async function SimulacionPage({ searchParams }: PageProps<"/simulacion">) {
+  // ?solucion=butterfly-i abre esa solución. Si no existe, se ignora.
+  const { solucion } = await searchParams;
+  const requestedSlug = typeof solucion === "string" ? solucion : null;
+  const initialSolutionSlug = requestedSlug && findSolution(requestedSlug) ? requestedSlug : null;
+
   return (
     <section className="flex flex-1 items-center justify-center px-6 py-4 lg:py-16">
-      <OrbitScene
-        initialBodies={TWO_BODY_SYSTEM}
-        draggableBodies="all"
-        isPlayable
-        className="size-[min(34vh,20rem)] lg:size-[min(60vh,40rem)]"
-      />
+      <SimulationPlayground initialSolutionSlug={initialSolutionSlug} />
     </section>
   );
 }

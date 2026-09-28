@@ -6,7 +6,12 @@ import DistanceLine from "./DistanceLine";
 import FinalStep from "./FinalStep";
 import Formula, { type FormulaValues } from "./Formula";
 import OrbitScene from "@/components/simulacion/OrbitScene";
-import { THREE_BODY_SYSTEM, TWO_BODY_SYSTEM } from "@/components/simulacion/sceneBodies";
+import {
+  SUN_AND_EARTH_PREDICTION_DURATION,
+  SUN_AND_EARTH_VIEW_RADIUS,
+  THREE_BODY_SYSTEM,
+  TWO_BODY_SYSTEM,
+} from "@/components/simulacion/sceneBodies";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
 import { ScientificNotation } from "./scientificNumber";
 import SkipIntroButton from "./SkipIntroButton";
@@ -78,6 +83,8 @@ export default function LearningExperience() {
               key={currentStep.hasThirdBody ? "three-bodies" : "two-bodies"}
               initialBodies={currentStep.hasThirdBody ? THREE_BODY_SYSTEM : TWO_BODY_SYSTEM}
               draggableBodies={["earth"]}
+              predictionDuration={SUN_AND_EARTH_PREDICTION_DURATION}
+              viewRadius={SUN_AND_EARTH_VIEW_RADIUS}
               className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
             />
           ) : (

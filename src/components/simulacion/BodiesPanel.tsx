@@ -181,7 +181,7 @@ export default function BodiesPanel({
   onVelocityChange,
 }: BodiesPanelProps) {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-border bg-surface/60 p-4 lg:max-h-[calc(100vh-9rem)] lg:w-80 lg:overflow-y-auto">
+    <div className="flex w-full flex-col gap-4 rounded-2xl border border-border bg-surface/60 p-4 lg:min-h-0 lg:overflow-y-auto">
       <div className="relative flex items-center justify-between gap-3">
         <h2 className="text-xs font-medium uppercase tracking-wide text-muted">
           Cuerpos ({bodies.length} de {MAX_BODIES})
