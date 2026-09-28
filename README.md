@@ -118,6 +118,26 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   con leapfrog se mantiene en 1,000. La explicación está en un comentario de
   `simulation.ts`. Comprobado: con velocidad 0,72 el punto más cercano al Sol sale a
   0,351, igual que en la fórmula de la elipse.
+  El paso de tiempo no es fijo: es una pequeña fracción del "tiempo de caída" de la pareja
+  de cuerpos más próxima (`timeStepFor`), con un máximo de 0,01. Con un paso fijo, las
+  órbitas de la galería, en las que los cuerpos llegan a pasar a 0,01 unidades unos de
+  otros, se desviaban o los cuerpos salían disparados; con el paso adaptable se cierran
+  con un error de alrededor de 0,01 tras varios periodos, y cuando los cuerpos están
+  lejos se comporta igual que antes. La órbita prevista guarda un punto cada 0,01
+  unidades recorridas (no cada paso) para no generar decenas de miles de puntos.
+  `advance` avanza una duración con los pasos que hagan falta y `stopsOnCollision`
+  permite a una escena (la galería) dejar que los cuerpos se acerquen sin pararla.
+- Datos de la galería (`src/data/threeBodySolutions.ts`): las seis soluciones (Lagrange,
+  figura de ocho, Butterfly I, Goggles, Moth I y Yin-Yang I) con sus condiciones
+  iniciales, su periodo y sus fuentes (Lagrange 1772; Chenciner y Montgomery 2000, que
+  demostraron la figura de ocho que Moore halló en 1993; Šuvakov y Dmitrašinović 2013,
+  Phys. Rev. Lett. 110, 114301). Las órbitas numéricas se dan como en esos trabajos:
+  posición inicial en línea recta y velocidades (vx, vy), (vx, vy) y (−2vx, −2vy).
+  Comprobado con el motor de la propia aplicación: los cuerpos vuelven a su estado
+  inicial tras uno y dos periodos con un error de entre 0,001 y 0,01 (Goggles llega a
+  0,07 en el segundo). Las condiciones publicadas tienen 5 o 6 cifras, así que la órbita
+  no se cierra con más exactitud. Lagrange es inestable con masas iguales: el error
+  numérico acaba deshaciéndola, y así se dice en su descripción.
 - Escena de simulación (`OrbitScene`, en `/simulacion`, sin pestaña todavía): el Sol
   (naranja) y la Tierra (blanca), con la simulación en pausa al empezar. Se puede
   arrastrar cualquiera de los dos hacia atrás, como una goma: la velocidad es la
@@ -170,8 +190,8 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar
   velocidad) pasan por un reducer (`simulationState.ts`), que es una función pura y no
   toca React; el bucle de animación solo pide "avanzar" en cada fotograma.
-  Limitaciones: la velocidad de la animación depende de los fotogramas por segundo (3
-  pasos de física por fotograma, unos 3,5 s por vuelta a 60 fps), y arrastrar el Sol
+  Limitaciones: la velocidad de la animación depende de los fotogramas por segundo (0,03
+  de tiempo por fotograma, unos 3,5 s por vuelta a 60 fps), y arrastrar el Sol
   con la misma escala que la Tierra es muy brusco (una velocidad de 1 lo aleja de la
   Tierra enseguida): con arrastres pequeños se controla mejor. Arrastrar no se puede
   hacer con teclado. Pendiente: alternativa accesible (campos numéricos o flechas) y

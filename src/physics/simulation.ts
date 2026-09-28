@@ -25,8 +25,20 @@ export function circularOrbitSpeed(centralMass: number, distance: number): numbe
   return Math.sqrt((GRAVITATIONAL_CONSTANT * centralMass) / distance);
 }
 
-/** Cuánto tiempo avanza la simulación en cada paso. Cuanto más pequeño, más preciso. */
-export const TIME_STEP = 0.01;
+// El tiempo que avanza la simulación en cada paso no es fijo. Cuando dos cuerpos se
+// acercan mucho, se mueven muy rápido en muy poco espacio y un paso grande se lo salta:
+// la órbita se desvía o los cuerpos salen disparados. Por eso el paso depende de lo
+// cerca que estén los dos cuerpos más próximos, con un máximo cuando están lejos.
+
+/** Lo máximo que avanza la simulación en un solo paso, con los cuerpos lejos. */
+const MAX_TIME_STEP = 0.01;
+
+/** Lo mínimo, para que el paso no llegue a cero si dos cuerpos casi se juntan del todo. */
+const MIN_TIME_STEP = 0.000001;
+
+/** Qué fracción del "tiempo de caída" entre los dos cuerpos más próximos dura un paso.
+ * Cuanto más pequeña, más precisa (y más lenta) es la simulación. */
+const STEP_ACCURACY = 0.01;
 
 /** La aceleración que sufre un cuerpo por la atracción de todos los demás. */
 function accelerationOn(body: Body, allBodies: Body[]): Vector {
@@ -106,6 +118,47 @@ export function stepSystem<T extends Body>(bodies: T[], timeStep: number): T[] {
   return kick(moved, timeStep / 2);
 }
 
+/** El tiempo que debe avanzar el siguiente paso. El "tiempo de caída" de una pareja es
+ * lo que tardaría, más o menos, en juntarse si se dejara caer: crece con la distancia y
+ * baja con la masa. El paso es una pequeña fracción del más corto de todas las parejas. */
+function timeStepFor(bodies: Body[]): number {
+  let shortestFallTime = Infinity;
+
+  for (let first = 0; first < bodies.length; first++) {
+    for (let second = first + 1; second < bodies.length; second++) {
+      const dx = bodies[second].position.x - bodies[first].position.x;
+      const dy = bodies[second].position.y - bodies[first].position.y;
+      const distance = Math.hypot(dx, dy);
+      const totalMass = bodies[first].mass + bodies[second].mass;
+
+      shortestFallTime = Math.min(shortestFallTime, Math.sqrt(distance ** 3 / totalMass));
+    }
+  }
+
+  return Math.max(MIN_TIME_STEP, Math.min(MAX_TIME_STEP, STEP_ACCURACY * shortestFallTime));
+}
+
+/** Avanza el sistema `duration` unidades de tiempo, con los pasos que haga falta. Si se da
+ * `shouldStop`, se detiene en cuanto devuelve true (p. ej. al chocar dos cuerpos). */
+export function advance<T extends Body>(
+  bodies: T[],
+  duration: number,
+  shouldStop?: (bodies: T[]) => boolean,
+): T[] {
+  let currentBodies = bodies;
+  let remaining = duration;
+
+  while (remaining > 0) {
+    const timeStep = Math.min(timeStepFor(currentBodies), remaining);
+    currentBodies = stepSystem(currentBodies, timeStep);
+    remaining -= timeStep;
+
+    if (shouldStop?.(currentBodies)) break;
+  }
+
+  return currentBodies;
+}
+
 /** Si algún par de cuerpos se toca, es decir, si la distancia entre sus centros es menor
  * que la suma de sus radios: cerca de otro cuerpo la atracción se dispara y el resultado
  * dejaría de tener sentido. */
@@ -122,24 +175,39 @@ export function haveCollided(bodies: Body[]): boolean {
   return false;
 }
 
-/** Adelanta la simulación `steps` pasos sobre una copia y devuelve, para cada cuerpo
- * (por su id), por dónde pasa, empezando por donde está ahora. Se detiene antes si dos
- * cuerpos chocan. No modifica los cuerpos recibidos. */
+// Al dibujar la órbita prevista no se guarda cada paso (serían decenas de miles de
+// puntos cuando hay encuentros cercanos), sino un punto cada vez que el cuerpo se ha
+// movido esta distancia.
+const TRAJECTORY_SAMPLE_DISTANCE = 0.01;
+
+/** Adelanta la simulación `duration` unidades de tiempo sobre una copia y devuelve, para
+ * cada cuerpo (por su id), por dónde pasa, empezando por donde está ahora. Con
+ * `stopOnCollision`, se detiene antes si dos cuerpos chocan. No modifica los cuerpos
+ * recibidos. */
 export function predictTrajectories<T extends Body>(
   bodies: T[],
-  steps: number,
+  duration: number,
+  stopOnCollision: boolean,
 ): Record<string, Vector[]> {
   const trajectories: Record<string, Vector[]> = {};
-  for (const body of bodies) trajectories[body.id] = [];
+  for (const body of bodies) trajectories[body.id] = [body.position];
 
   let currentBodies = bodies;
+  let elapsed = 0;
 
-  for (let step = 0; step <= steps; step++) {
-    for (const body of currentBodies) trajectories[body.id].push(body.position);
+  while (elapsed < duration) {
+    if (stopOnCollision && haveCollided(currentBodies)) break;
 
-    if (haveCollided(currentBodies)) break;
+    const timeStep = timeStepFor(currentBodies);
+    currentBodies = stepSystem(currentBodies, timeStep);
+    elapsed += timeStep;
 
-    currentBodies = stepSystem(currentBodies, TIME_STEP);
+    for (const body of currentBodies) {
+      const path = trajectories[body.id];
+      const last = path[path.length - 1];
+      const moved = Math.hypot(body.position.x - last.x, body.position.y - last.y);
+      if (moved >= TRAJECTORY_SAMPLE_DISTANCE) path.push(body.position);
+    }
   }
 
   return trajectories;

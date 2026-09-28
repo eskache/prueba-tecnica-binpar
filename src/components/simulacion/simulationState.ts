@@ -1,16 +1,18 @@
-import { haveCollided, stepSystem, TIME_STEP, type Vector } from "@/physics/simulation";
+import { advance, haveCollided, type Vector } from "@/physics/simulation";
 import { createNewBody, MAX_BODIES, radiusFromMass, type SceneBody } from "./sceneBodies";
 
-// Cuántos pasos de física se avanzan en cada fotograma. Con 3, una vuelta a la
-// Tierra dura unos 3,5 segundos a 60 fotogramas por segundo. En pantallas de más
-// fotogramas por segundo la simulación va más rápida.
-const STEPS_PER_FRAME = 3;
+// Cuánto tiempo de simulación avanza cada fotograma. Con 0,03, una vuelta a la Tierra
+// (2π de tiempo) dura unos 3,5 segundos a 60 fotogramas por segundo. En pantallas de
+// más fotogramas por segundo la simulación va más rápida.
+const TIME_PER_FRAME = 0.03;
 
 export type SimulationState = {
   /** Cómo estaban los cuerpos al empezar, para poder reiniciar. */
   initialBodies: SceneBody[];
   bodies: SceneBody[];
   isRunning: boolean;
+  /** Si la simulación se para (y no se calcula más) cuando dos cuerpos chocan. */
+  stopsOnCollision: boolean;
   /** El cuerpo elegido (su tarjeta está abierta en el panel y se resalta en el dibujo). */
   selectedBodyId: string | null;
 };
@@ -31,11 +33,20 @@ function defaultSelectedBodyId(bodies: SceneBody[]): string | null {
   return bodies.at(-1)?.id ?? null;
 }
 
-export function createInitialState(initialBodies: SceneBody[]): SimulationState {
+export type SimulationSetup = {
+  initialBodies: SceneBody[];
+  stopsOnCollision: boolean;
+};
+
+export function createInitialState({
+  initialBodies,
+  stopsOnCollision,
+}: SimulationSetup): SimulationState {
   return {
     initialBodies,
     bodies: initialBodies,
     isRunning: false,
+    stopsOnCollision,
     selectedBodyId: defaultSelectedBodyId(initialBodies),
   };
 }
@@ -48,25 +59,25 @@ export function simulationReducer(
 ): SimulationState {
   switch (action.type) {
     case "tick": {
-      let bodies = state.bodies;
+      // Si dos cuerpos chocan, la simulación se para (y se puede reiniciar).
+      const bodies = advance(
+        state.bodies,
+        TIME_PER_FRAME,
+        state.stopsOnCollision ? haveCollided : undefined,
+      );
+      const hasCollided = state.stopsOnCollision && haveCollided(bodies);
 
-      for (let step = 0; step < STEPS_PER_FRAME; step++) {
-        bodies = stepSystem(bodies, TIME_STEP);
-
-        // Si dos cuerpos chocan, la simulación se para (y se puede reiniciar).
-        if (haveCollided(bodies)) {
-          return { ...state, bodies, isRunning: false };
-        }
-      }
-
-      return { ...state, bodies };
+      return { ...state, bodies, isRunning: state.isRunning && !hasCollided };
     }
 
     case "toggleRunning":
       return { ...state, isRunning: !state.isRunning };
 
     case "reset":
-      return createInitialState(state.initialBodies);
+      return createInitialState({
+        initialBodies: state.initialBodies,
+        stopsOnCollision: state.stopsOnCollision,
+      });
 
     case "addBody": {
       if (state.bodies.length >= MAX_BODIES) return state;

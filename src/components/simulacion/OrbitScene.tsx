@@ -7,9 +7,9 @@ import { BODY_COLOR_CLASSES, MAX_BODIES, type SceneBody } from "./sceneBodies";
 import SimulationControls from "./SimulationControls";
 import { createInitialState, simulationReducer } from "./simulationState";
 
-// Una vuelta completa dura 2π unidades de tiempo, unos 628 pasos de 0,01: tres vueltas
-// son unos 1900 pasos.
-const STEPS_FOR_THREE_ORBITS = 1900;
+// Hasta cuándo se prevé la órbita: una vuelta a la Tierra dura 2π unidades de tiempo,
+// así que 19 son unas tres vueltas.
+const PREDICTION_DURATION = 19;
 
 // La zona en la que se detecta el puntero sobre un cuerpo es algo más grande que su
 // dibujo, para que sea fácil agarrarlo.
@@ -44,6 +44,9 @@ type OrbitSceneProps = {
   /** Los cuerpos a los que se les puede dar velocidad arrastrándolos hacia atrás: los
    * indicados por su id, o todos. */
   draggableBodies: string[] | "all";
+  /** Si es false, los cuerpos pueden acercarse tanto como quieran sin que la simulación
+   * se pare (por defecto se para cuando dos chocan). */
+  stopsOnCollision?: boolean;
   /** Si es true, se muestra el panel de control (reproducir, pausar, reiniciar y añadir
    * cuerpos). */
   isPlayable?: boolean;
@@ -58,10 +61,11 @@ export default function OrbitScene({
   initialBodies,
   draggableBodies,
   isPlayable = false,
+  stopsOnCollision = true,
   className,
 }: OrbitSceneProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [state, dispatch] = useReducer(simulationReducer, initialBodies, createInitialState);
+  const [state, dispatch] = useReducer(simulationReducer, { initialBodies, stopsOnCollision }, createInitialState);
   const [draggedBodyId, setDraggedBodyId] = useState<string | null>(null);
 
   // Mientras la simulación corre, se avanza un poco en cada fotograma.
@@ -80,8 +84,11 @@ export default function OrbitScene({
 
   // Las órbitas previstas solo se dibujan en pausa: en marcha los cuerpos ya se mueven.
   const trajectories = useMemo(
-    () => (state.isRunning ? {} : predictTrajectories(state.bodies, STEPS_FOR_THREE_ORBITS)),
-    [state.bodies, state.isRunning],
+    () =>
+      state.isRunning
+        ? {}
+        : predictTrajectories(state.bodies, PREDICTION_DURATION, state.stopsOnCollision),
+    [state.bodies, state.isRunning, state.stopsOnCollision],
   );
 
   const draggableBodyList = state.bodies.filter(
