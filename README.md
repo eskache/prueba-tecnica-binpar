@@ -146,7 +146,11 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   límites al salir del campo y no hace caso a lo que no sea un número. Un slider de
   ratón no puede dar valores como 0,4662 (con unos 250 píxeles solo se pueden elegir
   unos 250 valores), por eso el campo. La galería cargará las condiciones iniciales
-  exactas desde datos. Pendiente del panel: quitar cuerpos.
+  exactas desde datos. Los cuerpos añadidos tienen un botón "Quitar"; el Sol y la
+  Tierra no se pueden quitar (solo se reinician). Al quitar uno, su sitio queda libre
+  para el siguiente que se añada (el cuerpo nuevo va al final de la lista, así que el
+  orden puede quedar como "Cuerpo 3, Cuerpo 5, Cuerpo 4"). Los cuerpos nuevos siempre
+  empiezan con la velocidad de una órbita circular alrededor del Sol.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar

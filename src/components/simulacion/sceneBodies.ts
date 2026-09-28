@@ -25,8 +25,9 @@ export const BODY_COLOR_CLASSES: Record<
   velocity: { fill: "fill-velocity", outline: "stroke-velocity", swatch: "bg-velocity" },
 };
 
-/** Un cuerpo de la física más lo necesario para mostrarlo. */
-export type SceneBody = Body & { name: string; color: BodyColor };
+/** Un cuerpo de la física más lo necesario para mostrarlo. `isUserAdded` es true en los
+ * que añade el usuario, que son los únicos que se pueden quitar. */
+export type SceneBody = Body & { name: string; color: BodyColor; isUserAdded?: boolean };
 
 // El tamaño dibujado crece con la masa, pero muy poco a poco: las masas van desde
 // millonésimas del Sol hasta el Sol entero, y con la raíz sexta (masa ** (1 / 6)) ese
@@ -90,11 +91,20 @@ const NEW_BODY_SLOTS: { distance: number; angle: number; color: BodyColor }[] = 
 
 export const MAX_BODIES = TWO_BODY_SYSTEM.length + NEW_BODY_SLOTS.length;
 
+function userAddedBodyId(slotNumber: number): string {
+  return `extra-${slotNumber + 1}`;
+}
+
 /** Un cuerpo nuevo, ligero como la Tierra, en el primer sitio libre y con la velocidad de
  * una órbita circular alrededor del Sol, para que ya haga algo al reproducir.
- * Solo vale a partir del sistema de dos cuerpos (Sol y Tierra). */
+ * Solo vale a partir del sistema de dos cuerpos (Sol y Tierra). Si el usuario quitó un
+ * cuerpo, su sitio queda libre para el siguiente. */
 export function createNewBody(existingBodies: SceneBody[]): SceneBody {
-  const slotNumber = existingBodies.length - TWO_BODY_SYSTEM.length;
+  const slotNumber = NEW_BODY_SLOTS.findIndex(
+    (_, index) => !existingBodies.some((body) => body.id === userAddedBodyId(index)),
+  );
+  if (slotNumber === -1) throw new Error("No quedan sitios libres para más cuerpos");
+
   const slot = NEW_BODY_SLOTS[slotNumber];
 
   const position = {
@@ -111,9 +121,10 @@ export function createNewBody(existingBodies: SceneBody[]): SceneBody {
   };
 
   return {
-    id: `extra-${slotNumber + 1}`,
-    name: `Cuerpo ${existingBodies.length + 1}`,
+    id: userAddedBodyId(slotNumber),
+    name: `Cuerpo ${slotNumber + TWO_BODY_SYSTEM.length + 1}`,
     color: slot.color,
+    isUserAdded: true,
     mass: EARTH_MASS,
     radius: radiusFromMass(EARTH_MASS),
     position,

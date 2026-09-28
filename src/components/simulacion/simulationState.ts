@@ -18,6 +18,7 @@ export type SimulationAction =
   | { type: "toggleRunning" }
   | { type: "reset" }
   | { type: "addBody" }
+  | { type: "removeBody"; bodyId: string }
   | { type: "setMass"; bodyId: string; mass: number }
   | { type: "setPosition"; bodyId: string; position: Vector }
   | { type: "setVelocity"; bodyId: string; velocity: Vector };
@@ -57,6 +58,13 @@ export function simulationReducer(
     case "addBody":
       if (state.bodies.length >= MAX_BODIES) return state;
       return { ...state, bodies: [...state.bodies, createNewBody(state.bodies)] };
+
+    // Solo se pueden quitar los cuerpos que añadió el usuario, no el Sol ni la Tierra.
+    case "removeBody":
+      return {
+        ...state,
+        bodies: state.bodies.filter((body) => body.id !== action.bodyId || !body.isUserAdded),
+      };
 
     // Al cambiar la masa cambia también el tamaño con el que se dibuja el cuerpo.
     case "setMass":

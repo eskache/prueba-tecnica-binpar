@@ -45,6 +45,7 @@ type SimulationPanelProps = {
   onToggleRunning: () => void;
   onReset: () => void;
   onAddBody: () => void;
+  onRemoveBody: (bodyId: string) => void;
   onMassChange: (bodyId: string, mass: number) => void;
   onPositionChange: (bodyId: string, position: Vector) => void;
   onVelocityChange: (bodyId: string, velocity: Vector) => void;
@@ -59,6 +60,7 @@ export default function SimulationPanel({
   onToggleRunning,
   onReset,
   onAddBody,
+  onRemoveBody,
   onMassChange,
   onPositionChange,
   onVelocityChange,
@@ -98,13 +100,26 @@ export default function SimulationPanel({
 
             return (
               <li key={body.id} className="flex flex-col gap-3">
-                <span className="flex items-center gap-3 text-sm text-foreground">
-                  <span
-                    aria-hidden="true"
-                    className={`h-3 w-3 rounded-full ${BODY_COLOR_CLASSES[body.color].swatch}`}
-                  />
-                  {body.name}
-                </span>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-3 text-sm text-foreground">
+                    <span
+                      aria-hidden="true"
+                      className={`h-3 w-3 rounded-full ${BODY_COLOR_CLASSES[body.color].swatch}`}
+                    />
+                    {body.name}
+                  </span>
+
+                  {body.isUserAdded && (
+                    <button
+                      type="button"
+                      onClick={() => onRemoveBody(body.id)}
+                      aria-label={`Quitar ${body.name}`}
+                      className="rounded-full border border-border px-3 py-1 text-xs text-muted transition-colors hover:border-accent/60 hover:text-foreground"
+                    >
+                      Quitar
+                    </button>
+                  )}
+                </div>
 
                 <LabeledSlider
                   label="Masa"
