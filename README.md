@@ -136,14 +136,17 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   van desde millonésimas de la del Sol hasta la del Sol entero y con un slider normal
   quedarían todas pegadas a un extremo. Al cambiar la masa cambia también el radio del
   cuerpo, y con ello cuándo choca. El slider se maneja con las flechas del teclado y
-  lee la masa en voz alta. Cada cuerpo tiene también dos sliders de velocidad, uno para
-  la componente en x y otro para la de y (de −2 a 2, en unidades de la simulación), que
-  se mantienen sincronizados con el arrastre porque ambos escriben la misma velocidad
-  del cuerpo. Se eligieron las componentes y no rapidez y dirección porque las
-  soluciones de tres cuerpos de la galería se dan en componentes (vx, vy). Con el paso
-  de 0,01 no se pueden reproducir con exactitud valores como 0,4662: para eso la
-  galería cargará las condiciones iniciales exactas. Pendiente del panel: sliders de
-  la posición en x y en y de cada cuerpo, y quitar cuerpos.
+  lee la masa en voz alta. Cada cuerpo tiene también sliders de posición (x e y, de −1,25 a
+  1,25, los límites de lo que se dibuja) y de velocidad (x e y, de −2 a 2), que se
+  mantienen sincronizados con el arrastre porque todos escriben en el mismo estado del
+  cuerpo. Se eligieron las componentes y no rapidez y dirección porque las soluciones de
+  tres cuerpos de la galería se dan en componentes. Junto a cada slider hay un campo
+  para escribir el valor exacto (`NumberField`): acepta coma o punto decimal y notación
+  científica (3e-3), aplica el valor en cuanto es un número válido, lo ajusta a los
+  límites al salir del campo y no hace caso a lo que no sea un número. Un slider de
+  ratón no puede dar valores como 0,4662 (con unos 250 píxeles solo se pueden elegir
+  unos 250 valores), por eso el campo. La galería cargará las condiciones iniciales
+  exactas desde datos. Pendiente del panel: quitar cuerpos.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar

@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 type LabeledSliderProps = {
   /** El nombre del valor que controla, p. ej. "Masa". */
   label: string;
-  /** El valor actual escrito como se muestra en pantalla. */
-  valueText: ReactNode;
+  /** El campo donde se puede escribir el valor exacto. */
+  field: ReactNode;
   /** Lo que se dice en voz alta al leer el slider, sin la etiqueta. */
   spokenValue: string;
   /** El nombre completo para lectores de pantalla, p. ej. "Masa de la Tierra". */
@@ -19,7 +19,7 @@ type LabeledSliderProps = {
 /** Un slider con su etiqueta y su valor actual a la vista. */
 export default function LabeledSlider({
   label,
-  valueText,
+  field,
   spokenValue,
   ariaLabel,
   min,
@@ -32,7 +32,7 @@ export default function LabeledSlider({
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-3 text-xs text-muted">
         <span>{label}</span>
-        <span>{valueText}</span>
+        {field}
       </div>
 
       <input

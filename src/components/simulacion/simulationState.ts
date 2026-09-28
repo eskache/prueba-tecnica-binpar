@@ -19,6 +19,7 @@ export type SimulationAction =
   | { type: "reset" }
   | { type: "addBody" }
   | { type: "setMass"; bodyId: string; mass: number }
+  | { type: "setPosition"; bodyId: string; position: Vector }
   | { type: "setVelocity"; bodyId: string; velocity: Vector };
 
 export function createInitialState(initialBodies: SceneBody[]): SimulationState {
@@ -65,6 +66,14 @@ export function simulationReducer(
           body.id === action.bodyId
             ? { ...body, mass: action.mass, radius: radiusFromMass(action.mass) }
             : body,
+        ),
+      };
+
+    case "setPosition":
+      return {
+        ...state,
+        bodies: state.bodies.map((body) =>
+          body.id === action.bodyId ? { ...body, position: action.position } : body,
         ),
       };
 
