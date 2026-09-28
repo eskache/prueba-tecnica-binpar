@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState, type PointerEvent } from "react";
 import { predictTrajectories, type Vector } from "@/physics/simulation";
+import BodiesPanel from "./BodiesPanel";
 import { BODY_COLOR_CLASSES, MAX_BODIES, type SceneBody } from "./sceneBodies";
-import SimulationPanel from "./SimulationPanel";
+import SimulationControls from "./SimulationControls";
 import { createInitialState, simulationReducer } from "./simulationState";
 
 // Una vuelta completa dura 2π unidades de tiempo, unos 628 pasos de 0,01: tres vueltas
@@ -95,6 +96,8 @@ export default function OrbitScene({
   }
 
   function startDragging(bodyId: string, event: PointerEvent<SVGCircleElement>) {
+    // Agarrar un cuerpo lo elige: se abre su tarjeta en el panel.
+    dispatch({ type: "selectBody", bodyId });
     // Con la captura, el círculo sigue recibiendo el arrastre aunque el puntero salga de él.
     event.currentTarget.setPointerCapture(event.pointerId);
     setDraggedBodyId(bodyId);
@@ -113,77 +116,106 @@ export default function OrbitScene({
   }
 
   const draggedBody = state.bodies.find((body) => body.id === draggedBodyId);
+  const selectedBody = state.bodies.find((body) => body.id === state.selectedBodyId);
 
   return (
-    <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
-      <svg
-        ref={svgRef}
-        viewBox="-1.25 -1.25 2.5 2.5"
-        role="img"
-        aria-label="Cuerpos que se atraen por la gravedad, con la órbita que van a recorrer. Arrastra un cuerpo hacia atrás para cambiar su velocidad."
-        className={`touch-none ${className}`}
+    <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start lg:gap-12">
+      {/* En móvil, el dibujo y los botones se quedan fijos arriba mientras se desplaza el
+          panel de cuerpos, para ver el efecto de cada cambio mientras se hace. */}
+      <div
+        className={`flex flex-col items-center gap-3 ${
+          isPlayable ? "sticky top-[4.75rem] z-10 w-full bg-background py-2 lg:static lg:w-auto" : ""
+        }`}
       >
-        {/* vectorEffect deja el grosor y el guion en píxeles, sin escalarlos con el viewBox. */}
-        {draggableBodyList.map((body) => (
-          <path
-            key={body.id}
-            d={toPathData(trajectories[body.id] ?? [])}
-            fill="none"
-            className={BODY_COLOR_CLASSES[body.color].outline}
-            strokeWidth={2}
-            strokeDasharray="6 6"
-            vectorEffect="non-scaling-stroke"
-          />
-        ))}
+        <svg
+          ref={svgRef}
+          viewBox="-1.25 -1.25 2.5 2.5"
+          role="img"
+          aria-label="Cuerpos que se atraen por la gravedad, con la órbita que van a recorrer. Arrastra un cuerpo hacia atrás para cambiar su velocidad."
+          className={`touch-none ${className}`}
+        >
+          {/* vectorEffect deja el grosor y el guion en píxeles, sin escalarlos con el viewBox. */}
+          {draggableBodyList.map((body) => (
+            <path
+              key={body.id}
+              d={toPathData(trajectories[body.id] ?? [])}
+              fill="none"
+              className={BODY_COLOR_CLASSES[body.color].outline}
+              strokeWidth={2}
+              strokeDasharray="6 6"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
 
-        {draggedBody && (
-          <line
-            x1={draggedBody.position.x}
-            y1={draggedBody.position.y}
-            x2={draggedBody.position.x - draggedBody.velocity.x / SPEED_PER_PULL_DISTANCE}
-            y2={draggedBody.position.y - draggedBody.velocity.y / SPEED_PER_PULL_DISTANCE}
-            className="stroke-velocity"
-            strokeWidth={2}
-            vectorEffect="non-scaling-stroke"
-          />
-        )}
+          {draggedBody && (
+            <line
+              x1={draggedBody.position.x}
+              y1={draggedBody.position.y}
+              x2={draggedBody.position.x - draggedBody.velocity.x / SPEED_PER_PULL_DISTANCE}
+              y2={draggedBody.position.y - draggedBody.velocity.y / SPEED_PER_PULL_DISTANCE}
+              className="stroke-velocity"
+              strokeWidth={2}
+              vectorEffect="non-scaling-stroke"
+            />
+          )}
 
-        {state.bodies.map((body) => (
-          <circle
-            key={body.id}
-            cx={body.position.x}
-            cy={body.position.y}
-            r={body.radius}
-            className={BODY_COLOR_CLASSES[body.color].fill}
-          />
-        ))}
-
-        {/* Círculos invisibles, algo más grandes que los cuerpos, que reciben el arrastre.
-            Con la simulación en marcha no se pueden arrastrar. */}
-        {!state.isRunning &&
-          draggableBodyList.map((body) => (
+          {state.bodies.map((body) => (
             <circle
               key={body.id}
               cx={body.position.x}
               cy={body.position.y}
-              r={body.radius + GRAB_MARGIN}
-              className="cursor-grab fill-transparent"
-              onPointerDown={(event) => startDragging(body.id, event)}
-              onPointerMove={(event) => drag(body, event)}
-              onPointerUp={stopDragging}
-              onPointerCancel={stopDragging}
+              r={body.radius}
+              className={BODY_COLOR_CLASSES[body.color].fill}
             />
           ))}
-      </svg>
+
+          {/* Un anillo señala el cuerpo elegido, el de la tarjeta abierta en el panel. */}
+          {isPlayable && selectedBody && (
+            <circle
+              cx={selectedBody.position.x}
+              cy={selectedBody.position.y}
+              r={selectedBody.radius + 0.05}
+              fill="none"
+              className="stroke-foreground"
+              strokeWidth={2}
+              vectorEffect="non-scaling-stroke"
+            />
+          )}
+
+          {/* Círculos invisibles, algo más grandes que los cuerpos, que reciben el arrastre.
+              Con la simulación en marcha no se pueden arrastrar. */}
+          {!state.isRunning &&
+            draggableBodyList.map((body) => (
+              <circle
+                key={body.id}
+                cx={body.position.x}
+                cy={body.position.y}
+                r={body.radius + GRAB_MARGIN}
+                className="cursor-grab fill-transparent"
+                onPointerDown={(event) => startDragging(body.id, event)}
+                onPointerMove={(event) => drag(body, event)}
+                onPointerUp={stopDragging}
+                onPointerCancel={stopDragging}
+              />
+            ))}
+        </svg>
+
+        {isPlayable && (
+          <SimulationControls
+            isRunning={state.isRunning}
+            canAddBody={state.bodies.length < MAX_BODIES}
+            onToggleRunning={() => dispatch({ type: "toggleRunning" })}
+            onReset={() => dispatch({ type: "reset" })}
+            onAddBody={() => dispatch({ type: "addBody" })}
+          />
+        )}
+      </div>
 
       {isPlayable && (
-        <SimulationPanel
+        <BodiesPanel
           bodies={state.bodies}
-          isRunning={state.isRunning}
-          canAddBody={state.bodies.length < MAX_BODIES}
-          onToggleRunning={() => dispatch({ type: "toggleRunning" })}
-          onReset={() => dispatch({ type: "reset" })}
-          onAddBody={() => dispatch({ type: "addBody" })}
+          selectedBodyId={state.selectedBodyId}
+          onSelectBody={(bodyId) => dispatch({ type: "selectBody", bodyId })}
           onRemoveBody={(bodyId) => dispatch({ type: "removeBody", bodyId })}
           onMassChange={(bodyId, mass) => dispatch({ type: "setMass", bodyId, mass })}
           onPositionChange={(bodyId, position) =>

@@ -11,6 +11,8 @@ export type SimulationState = {
   initialBodies: SceneBody[];
   bodies: SceneBody[];
   isRunning: boolean;
+  /** El cuerpo elegido (su tarjeta está abierta en el panel y se resalta en el dibujo). */
+  selectedBodyId: string | null;
 };
 
 export type SimulationAction =
@@ -18,13 +20,24 @@ export type SimulationAction =
   | { type: "toggleRunning" }
   | { type: "reset" }
   | { type: "addBody" }
+  | { type: "selectBody"; bodyId: string | null }
   | { type: "removeBody"; bodyId: string }
   | { type: "setMass"; bodyId: string; mass: number }
   | { type: "setPosition"; bodyId: string; position: Vector }
   | { type: "setVelocity"; bodyId: string; velocity: Vector };
 
+/** Al empezar está elegido el último cuerpo (la Tierra, en el sistema Sol y Tierra). */
+function defaultSelectedBodyId(bodies: SceneBody[]): string | null {
+  return bodies.at(-1)?.id ?? null;
+}
+
 export function createInitialState(initialBodies: SceneBody[]): SimulationState {
-  return { initialBodies, bodies: initialBodies, isRunning: false };
+  return {
+    initialBodies,
+    bodies: initialBodies,
+    isRunning: false,
+    selectedBodyId: defaultSelectedBodyId(initialBodies),
+  };
 }
 
 /** Todos los cambios de la simulación pasan por aquí: dado el estado y lo que ha
@@ -53,18 +66,30 @@ export function simulationReducer(
       return { ...state, isRunning: !state.isRunning };
 
     case "reset":
-      return { ...state, bodies: state.initialBodies, isRunning: false };
+      return createInitialState(state.initialBodies);
 
-    case "addBody":
+    case "addBody": {
       if (state.bodies.length >= MAX_BODIES) return state;
-      return { ...state, bodies: [...state.bodies, createNewBody(state.bodies)] };
+
+      // El cuerpo nuevo queda elegido, para poder ajustarlo enseguida.
+      const newBody = createNewBody(state.bodies);
+      return { ...state, bodies: [...state.bodies, newBody], selectedBodyId: newBody.id };
+    }
+
+    case "selectBody":
+      return { ...state, selectedBodyId: action.bodyId };
 
     // Solo se pueden quitar los cuerpos que añadió el usuario, no el Sol ni la Tierra.
-    case "removeBody":
+    case "removeBody": {
+      const isRemovable = state.bodies.some((body) => body.id === action.bodyId && body.isUserAdded);
+      if (!isRemovable) return state;
+
       return {
         ...state,
-        bodies: state.bodies.filter((body) => body.id !== action.bodyId || !body.isUserAdded),
+        bodies: state.bodies.filter((body) => body.id !== action.bodyId),
+        selectedBodyId: state.selectedBodyId === action.bodyId ? null : state.selectedBodyId,
       };
+    }
 
     // Al cambiar la masa cambia también el tamaño con el que se dibuja el cuerpo.
     case "setMass":

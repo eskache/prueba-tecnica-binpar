@@ -124,9 +124,10 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   contraria al arrastre (0,5 de arrastre = velocidad 1, la de la órbita circular;
   máximo 1,6, por encima de la de escape, √2), se dibuja la goma y la órbita prevista de
   cada uno (naranja para el Sol, turquesa para la Tierra) se recalcula en cada
-  movimiento. Usa Pointer Events, así que vale también para táctil. Un panel de
-  control (`SimulationPanel`) tiene "Reproducir/Pausar", "Reiniciar" y "Añadir cuerpo", y
-  lista los cuerpos con su color. "Reproducir" pone todo en marcha, "Pausar" lo detiene
+  movimiento. Usa Pointer Events, así que vale también para táctil. Bajo el
+  dibujo hay los botones (`SimulationControls`) "Reproducir/Pausar", "Reiniciar" y
+  "Añadir cuerpo", y al lado (o debajo, en móvil) el panel de cuerpos (`BodiesPanel`).
+  "Reproducir" pone todo en marcha, "Pausar" lo detiene
   donde esté y "Reiniciar" lo devuelve al principio (quitando los añadidos). Cada cuerpo
   añadido es ligero como la Tierra, aparece en uno de tres sitios fijos alrededor del
   Sol (`NEW_BODY_SLOTS`) con la velocidad de una órbita circular, y se puede arrastrar
@@ -151,6 +152,19 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   para el siguiente que se añada (el cuerpo nuevo va al final de la lista, así que el
   orden puede quedar como "Cuerpo 3, Cuerpo 5, Cuerpo 4"). Los cuerpos nuevos siempre
   empiezan con la velocidad de una órbita circular alrededor del Sol.
+  Usabilidad del panel: es una lista de tarjetas y solo está abierta la del cuerpo elegido
+  (el panel es corto), que se resalta con un anillo en el dibujo; se elige pulsando su
+  tarjeta o agarrando el cuerpo en el dibujo, y al añadir un cuerpo queda elegido. Las
+  unidades y el uso de los campos se explican en un icono "?" (`InfoTip`) que se abre al
+  pasar el ratón, al pulsarlo o tocarlo (y se cierra pulsando fuera o con Escape) y al
+  enfocarlo con el teclado. En móvil el dibujo y los botones se quedan fijos arriba
+  mientras se desplaza el panel, para ver el efecto de cada cambio; los sliders tienen
+  una zona táctil alta y un tirador grande, y arrastrar en vertical sobre ellos sigue
+  desplazando la página. Los campos usan el teclado normal (el numérico de algunos móviles
+  no tiene el signo menos ni la "e"), seleccionan todo al entrar y se confirman con Enter.
+  Limitación: la altura de la barra superior cambia si sus pestañas se parten en dos
+  líneas; el dibujo fijo se coloca para el caso de dos líneas, así que en pantallas
+  anchas (menos de 1024px) queda una pequeña separación de unos 20px bajo ella.
   Con la simulación en marcha no se dibujan las órbitas previstas ni se puede arrastrar:
   hay que pausar. Si dos cuerpos chocan, se para sola.
   Los cambios de estado (avanzar un fotograma, reproducir/pausar, reiniciar, dar

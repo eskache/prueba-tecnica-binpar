@@ -30,7 +30,7 @@ export default function LabeledSlider({
 }: LabeledSliderProps) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between gap-3 text-xs text-muted">
+      <div className="flex items-center justify-between gap-3 text-sm text-muted">
         <span>{label}</span>
         {field}
       </div>
@@ -44,7 +44,6 @@ export default function LabeledSlider({
         onChange={(event) => onChange(Number(event.target.value))}
         aria-label={ariaLabel}
         aria-valuetext={spokenValue}
-        className="w-full accent-accent"
       />
     </div>
   );

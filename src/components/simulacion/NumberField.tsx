@@ -40,12 +40,19 @@ export default function NumberField({
   return (
     <input
       type="text"
-      inputMode="decimal"
+      // Con el teclado numérico ("decimal") en algunos móviles no se puede escribir el signo
+      // menos ni la "e" de la notación científica: por eso el teclado normal.
+      inputMode="text"
+      enterKeyHint="done"
+      autoComplete="off"
       value={draft ?? format(value)}
       onChange={(event) => handleChange(event.target.value)}
+      // Al entrar en el campo se selecciona todo, para poder escribir encima directamente.
+      onFocus={(event) => event.target.select()}
+      onKeyDown={(event) => event.key === "Enter" && event.currentTarget.blur()}
       onBlur={() => setDraft(null)}
       aria-label={ariaLabel}
-      className="w-24 rounded-md border border-border bg-transparent px-2 py-1 text-right text-xs text-foreground"
+      className="min-h-9 w-28 rounded-md border border-border bg-transparent px-2 text-right text-sm text-foreground"
     />
   );
 }
