@@ -1,8 +1,8 @@
 # Gravitación universal · Binpar
 
-Aplicación web que enseña la ley de gravitación universal de Newton (Parte A) y una
-galería de soluciones del problema de los tres cuerpos (Parte B), en la misma app,
-separadas por pestañas en la barra superior.
+Aplicación web que enseña la ley de gravitación universal de Newton (Parte A, en
+`/aprendizaje`) y, dentro de la misma simulación, deja cargar las seis soluciones del
+problema de los tres cuerpos (Parte B, en `/simulacion`).
 
 ## Cómo ejecutarlo
 
@@ -30,11 +30,14 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm · axios (para llam
 ## Decisiones técnicas
 
 - **Server Components por defecto, Client Components solo donde hace falta estado o
-  eventos del navegador** (`TopBar`, `Term`, `LearningExperience`). Minimiza el JS
-  enviado al cliente.
-- **Rutas de carpeta como pestañas** (`/aprendizaje`, `/simulacion`) en vez de estado en
-  memoria, para que una solución de la Parte B tenga URL propia y compartible
-  (`/simulacion?solucion=<slug>`) sin más estado que la propia URL.
+  eventos del navegador** (`Term`, `LearningExperience`). Minimiza el JS enviado al
+  cliente.
+- **Rutas de carpeta** (`/aprendizaje`, `/simulacion`) en vez de estado en memoria, para
+  que una solución de la Parte B tenga URL propia y compartible
+  (`/simulacion?solucion=<slug>`) sin más estado que la propia URL. No hay barra de
+  navegación: `/aprendizaje` acaba con un botón "Ir a la simulación", y ahí la Parte B es
+  una lista de nombres dentro del mismo simulador (`SolutionPicker`), no una galería de
+  tarjetas aparte con sus propias páginas de detalle: por decisión de simplificar.
 - **Tokens de diseño vía CSS custom properties + `@theme inline` de Tailwind v4**
   (`src/app/globals.css`), en vez de colores sueltos en componentes.
 - Tema oscuro fijo (no conmutable): es parte de la identidad visual pedida, no un

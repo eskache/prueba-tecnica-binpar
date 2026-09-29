@@ -144,7 +144,7 @@ export default function OrbitScene({
           panel de cuerpos, para ver el efecto de cada cambio mientras se hace. */}
       <div
         className={`flex flex-col items-center gap-3 ${
-          isPlayable ? "sticky top-[4.75rem] z-10 w-full bg-background py-2 lg:static lg:w-auto" : ""
+          isPlayable ? "sticky top-0 z-10 w-full bg-background py-2 lg:static lg:w-auto" : ""
         }`}
       >
         <svg

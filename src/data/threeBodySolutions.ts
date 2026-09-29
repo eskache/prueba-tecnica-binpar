@@ -23,7 +23,7 @@ import type { SceneBody } from "@/components/simulacion/sceneBodies";
 // y velocidad iniciales con ese error.
 
 export type ThreeBodySolution = {
-  /** Lo que aparece en la dirección de la página: /galeria/<slug>. */
+  /** Lo que aparece en la dirección de la página: /simulacion?solucion=<slug>. */
   slug: string;
   name: string;
   description: string;
