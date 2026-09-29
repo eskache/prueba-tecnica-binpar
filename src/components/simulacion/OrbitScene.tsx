@@ -16,13 +16,24 @@ import SimulationControls from "./SimulationControls";
 import { createInitialState, simulationReducer } from "./simulationState";
 
 // La zona en la que se detecta el puntero sobre un cuerpo es algo más grande que su
-// dibujo, para que sea fácil agarrarlo.
-const GRAB_MARGIN = 0.08;
+// dibujo, para que sea fácil agarrarlo. Es una fracción de viewRadius (no un tamaño
+// fijo): dos escenas del mismo tamaño en píxeles pero con distinto viewRadius dibujan
+// el mismo sistema más grande o más pequeño, y sin esto la zona de agarre se encogería
+// en las escenas más alejadas hasta quedar inutilizable en pantallas pequeñas.
+const GRAB_MARGIN_RATIO = 0.1;
 
 // Arrastrar un cuerpo hacia atrás una distancia de 0,5 le da velocidad 1, la de una
 // órbita circular. La velocidad máxima está algo por encima de la de escape (√2 ≈ 1,41).
 const SPEED_PER_PULL_DISTANCE = 2;
 const MAX_SPEED = 1.6;
+
+// Cuánto más grande se dibuja el marco que la órbita prevista que tiene que caber en él.
+const VIEW_RADIUS_MARGIN = 1.1;
+
+// Un límite a lo que se puede alejar el dibujo: una velocidad de escape aleja mucho a un
+// cuerpo (aunque nunca llegue a "escapar" del todo, porque la predicción dura un tiempo
+// fijo), y sin límite el dibujo se alejaría hasta dejar los cuerpos como puntos.
+const MAX_VIEW_RADIUS = 6;
 
 /** La velocidad que da arrastrar hacia atrás: es la contraria a la del arrastre. */
 function velocityFromPull(pull: Vector): Vector {
@@ -53,7 +64,8 @@ type OrbitSceneProps = {
   stopsOnCollision?: boolean;
   /** Hasta cuándo se prevé la órbita, en unidades de tiempo de la simulación. */
   predictionDuration: number;
-  /** Hasta qué distancia del centro se dibuja: el dibujo va de −viewRadius a viewRadius. */
+  /** Hasta qué distancia del centro se dibuja como mínimo (el dibujo se aleja más si la
+   * órbita prevista no cabe: ver `effectiveViewRadius`). */
   viewRadius: number;
   /** Lo que se muestra sobre el panel de cuerpos (p. ej. la lista de sistemas). */
   panelHeader?: ReactNode;
@@ -80,6 +92,9 @@ export default function OrbitScene({
   const svgRef = useRef<SVGSVGElement>(null);
   const [state, dispatch] = useReducer(simulationReducer, { initialBodies, stopsOnCollision }, createInitialState);
   const [draggedBodyId, setDraggedBodyId] = useState<string | null>(null);
+  // El marco con el que se empezó el arrastre en curso, o null si no hay ninguno (ver
+  // más abajo, junto a su uso).
+  const [viewRadiusBeforeDrag, setViewRadiusBeforeDrag] = useState<number | null>(null);
 
   // Mientras la simulación corre, se avanza un poco en cada fotograma.
   useEffect(() => {
@@ -108,6 +123,26 @@ export default function OrbitScene({
     (body) => draggableBodies === "all" || draggableBodies.includes(body.id),
   );
 
+  // Si la órbita prevista se aleja más que el marco fijado (`viewRadius`), el dibujo se
+  // aleja para que quepa entera: si no, el arrastre del usuario podría dejarla cortada,
+  // fuera del recuadro. Con los cuerpos en marcha, o sin predicción, se usa el marco fijo.
+  let trajectoryRadius = 0;
+  for (const path of Object.values(trajectories)) {
+    for (const point of path) {
+      trajectoryRadius = Math.max(trajectoryRadius, Math.hypot(point.x, point.y));
+    }
+  }
+  const liveViewRadius = Math.min(
+    Math.max(viewRadius, trajectoryRadius * VIEW_RADIUS_MARGIN),
+    MAX_VIEW_RADIUS,
+  );
+
+  // Mientras se arrastra un cuerpo, el marco se queda como estaba al empezar el gesto: si
+  // cambiara con cada movimiento, la conversión de píxeles a coordenadas de la escena (que
+  // usa el propio marco) cambiaría a mitad de arrastre, y un pequeño movimiento del ratón
+  // podría verse amplificado en un cambio de velocidad enorme, sin control.
+  const effectiveViewRadius = viewRadiusBeforeDrag ?? liveViewRadius;
+
   /** Dónde está el puntero, en las unidades del dibujo y no en píxeles de pantalla. */
   function pointerPosition(event: PointerEvent): Vector {
     const screenToDrawing = svgRef.current!.getScreenCTM()!.inverse();
@@ -121,6 +156,7 @@ export default function OrbitScene({
     // Con la captura, el círculo sigue recibiendo el arrastre aunque el puntero salga de él.
     event.currentTarget.setPointerCapture(event.pointerId);
     setDraggedBodyId(bodyId);
+    setViewRadiusBeforeDrag(liveViewRadius);
   }
 
   function drag(body: SceneBody, event: PointerEvent<SVGCircleElement>) {
@@ -133,6 +169,7 @@ export default function OrbitScene({
 
   function stopDragging() {
     setDraggedBodyId(null);
+    setViewRadiusBeforeDrag(null);
   }
 
   const draggedBody = state.bodies.find((body) => body.id === draggedBodyId);
@@ -149,7 +186,7 @@ export default function OrbitScene({
       >
         <svg
           ref={svgRef}
-          viewBox={`${-viewRadius} ${-viewRadius} ${2 * viewRadius} ${2 * viewRadius}`}
+          viewBox={`${-effectiveViewRadius} ${-effectiveViewRadius} ${2 * effectiveViewRadius} ${2 * effectiveViewRadius}`}
           role="img"
           aria-label="Cuerpos que se atraen por la gravedad, con la órbita que van a recorrer. Arrastra un cuerpo hacia atrás para cambiar su velocidad."
           className={`touch-none ${className}`}
@@ -210,7 +247,7 @@ export default function OrbitScene({
                 key={body.id}
                 cx={body.position.x}
                 cy={body.position.y}
-                r={body.radius + GRAB_MARGIN}
+                r={body.radius + effectiveViewRadius * GRAB_MARGIN_RATIO}
                 className="cursor-grab fill-transparent"
                 onPointerDown={(event) => startDragging(body.id, event)}
                 onPointerMove={(event) => drag(body, event)}

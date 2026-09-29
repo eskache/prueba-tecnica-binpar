@@ -10,6 +10,7 @@ import {
   SUN_AND_EARTH_PREDICTION_DURATION,
   SUN_AND_EARTH_VIEW_RADIUS,
   THREE_BODY_SYSTEM,
+  THREE_BODY_VIEW_RADIUS,
   TWO_BODY_SYSTEM,
 } from "@/components/simulacion/sceneBodies";
 import { GRAVITATIONAL_CONSTANT, LEARNING_STEPS } from "./learningSteps";
@@ -83,8 +84,12 @@ export default function LearningExperience() {
               key={currentStep.hasThirdBody ? "three-bodies" : "two-bodies"}
               initialBodies={currentStep.hasThirdBody ? THREE_BODY_SYSTEM : TWO_BODY_SYSTEM}
               draggableBodies={["earth"]}
+              // Con tres cuerpos, la Tierra pasa cerca del tercero enseguida: si la
+              // predicción se parase ahí (como con dos cuerpos, para no seguir tras un
+              // choque real), el contorno se vería cortado y no se notaría el caos.
+              stopsOnCollision={!currentStep.hasThirdBody}
               predictionDuration={SUN_AND_EARTH_PREDICTION_DURATION}
-              viewRadius={SUN_AND_EARTH_VIEW_RADIUS}
+              viewRadius={currentStep.hasThirdBody ? THREE_BODY_VIEW_RADIUS : SUN_AND_EARTH_VIEW_RADIUS}
               className="size-40 shrink-0 motion-safe:animate-fade-in sm:size-96"
             />
           ) : (

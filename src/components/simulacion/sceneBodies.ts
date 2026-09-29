@@ -84,6 +84,11 @@ const THIRD_BODY: SceneBody = {
 export const SUN_AND_EARTH_PREDICTION_DURATION = 19;
 export const SUN_AND_EARTH_VIEW_RADIUS = 1.25;
 
+// Con el tercer cuerpo, la órbita prevista de la Tierra se aleja mucho más del Sol
+// (hasta 2,6 unidades con la velocidad inicial): un dibujo tan ajustado como el del
+// sistema de dos cuerpos la dejaría fuera del recuadro, cortada.
+export const THREE_BODY_VIEW_RADIUS = 2.8;
+
 export const TWO_BODY_SYSTEM: SceneBody[] = [SUN, EARTH];
 export const THREE_BODY_SYSTEM: SceneBody[] = [SUN, EARTH, THIRD_BODY];
 

@@ -61,6 +61,14 @@ física (`src/physics/simulation.ts`), no tres implementaciones distintas.
   cuando están lejos. Con un paso fijo, cuatro de las seis soluciones de la galería (los
   cuerpos llegan a pasar a 0,01 unidades unos de otros) se desviaban o salían disparadas;
   con el paso adaptable se cierran tras un periodo con un error de alrededor de 0,01.
+- **El marco de dibujo se ajusta solo.** `OrbitScene` no usa el `viewRadius` que le pasan
+  a secas: lo agranda (hasta un máximo) si la órbita prevista no cabe, que con tres
+  cuerpos, o arrastrando, se aleja mucho más que con dos. Si no, quedaría cortada fuera
+  del recuadro — el bug que llevó a esto: en el paso del tercer cuerpo, la órbita se veía
+  sin terminar. Mientras se arrastra un cuerpo, ese marco se congela en el valor que tenía
+  al empezar el gesto: si cambiara con cada movimiento, la conversión de píxeles a
+  coordenadas de la escena cambiaría a mitad de arrastre, amplificando el propio gesto —
+  un movimiento pequeño del ratón podía disparar la velocidad a la de escape.
 - **Por qué no una librería.** Se evaluó y se descartó una librería de física 2D
   (Matter.js, Planck) o de N cuerpos ya hecha. La gravitación de Newton entre puntos es
   un algoritmo pequeño y cerrado — sumar la fuerza de cada pareja, integrar — y una
