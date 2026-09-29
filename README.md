@@ -13,9 +13,19 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000). La raíz (`/`) redirige a `/aprendizaje`.
 
+Para que funcionen los botones de preguntas del último paso (integración con un modelo
+de lenguaje), copia `.env.example` a `.env.local` y pon ahí una clave gratuita de
+[Groq](https://console.groq.com/keys):
+
+```bash
+cp .env.example .env.local
+```
+
+Sin esa clave, el resto de la aplicación funciona igual; esos botones muestran un error.
+
 ## Stack
 
-TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
+TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm · axios (para llamar a Groq).
 
 ## Decisiones técnicas
 
@@ -231,10 +241,21 @@ TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm.
   en 3D", "Cuéntame más sobre la historia de la ley de gravitación universal" y, como
   pregunta extra, "¿Dónde vemos tres cuerpos en la vida real?"), la pregunta grande "¿Crees
   que eres capaz de encontrar una solución al problema de los 3 cuerpos?" y el botón
-  "Ir a la simulación", que lleva a `/simulacion`. Los tres botones de preguntas todavía
-  no hacen nada: están preparados para la integración con el modelo de lenguaje, que
-  sigue pendiente. La pantalla es distinta a las demás (sin cuerpos ni texto al lado),
-  así que es un componente propio que el paso activa con `isFinalStep`. Aquí no hay
-  botón "Siguiente" ni "Saltar introducción".
-- Todavía no hay elemento interactivo propio, ni la integración con un
-  modelo de lenguaje: son mínimos de la Parte A que faltan.
+  "Ir a la simulación", que lleva a `/simulacion`. La pantalla es distinta a las demás
+  (sin cuerpos ni texto al lado), así que es un componente propio que el paso activa con
+  `isFinalStep`. Aquí no hay botón "Siguiente" ni "Saltar introducción".
+- Integración con un modelo de lenguaje: los tres botones de preguntas del paso final
+  llaman a `/api/preguntar` (`src/app/api/preguntar/route.ts`), una ruta de Next.js que
+  hace de intermediario con [Groq](https://groq.com) (gratuito, compatible con la API de
+  OpenAI) usando axios. La clave (`GROQ_API_KEY`) solo vive en el servidor; el modelo por
+  defecto es `llama-3.3-70b-versatile`, cambiable con `GROQ_MODEL` sin tocar código. La
+  ruta solo acepta las tres preguntas fijas de `src/lib/questions.ts` (compartido entre
+  el botón y la ruta): así la clave del servidor no sirve como un proxy abierto a
+  cualquier pregunta. Es una única llamada sin conversación ni reintentos: se pulsa un
+  botón, se ve "Pensando la respuesta…" y luego la respuesta o un error genérico. Sin
+  `GROQ_API_KEY` configurada, la ruta devuelve un error claro en vez de fallar sin más.
+  Para probarlo hace falta una clave gratuita de <https://console.groq.com/keys> en
+  `.env.local` (ver `.env.example`).
+- El elemento interactivo propio de los mínimos de la Parte A es la simulación de la
+  órbita (arrastrar un cuerpo, reproducir/pausar/reiniciar, sliders de masa, posición y
+  velocidad), presente desde el paso 5 y completa en `/simulacion`.
