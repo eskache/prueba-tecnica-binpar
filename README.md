@@ -27,7 +27,7 @@ Sin esa clave, el resto de la aplicación funciona igual; esos botones muestran 
 
 ## Despliegue
 
-**Versión desplegada:** _pendiente — enlace por añadir tras el primer despliegue._
+**Versión desplegada:** <https://prueba-tecnica-binpar.vercel.app/aprendizaje>
 
 Recomendado: [Vercel](https://vercel.com), gratis para un proyecto personal. Es la
 casa de Next.js, así que no hace falta configuración: detecta el framework, construye
