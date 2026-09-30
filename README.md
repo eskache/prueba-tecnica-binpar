@@ -23,6 +23,27 @@ cp .env.example .env.local
 
 Sin esa clave, el resto de la aplicación funciona igual; esos botones muestran un error.
 
+## Despliegue
+
+**Versión desplegada:** _pendiente — enlace por añadir tras el primer despliegue._
+
+Recomendado: [Vercel](https://vercel.com), gratis para un proyecto personal. Es la
+casa de Next.js, así que no hace falta configuración: detecta el framework, construye
+con `next build` y sirve tanto las páginas como la ruta `/api/preguntar` (que necesita
+un servidor, no solo archivos estáticos). GitHub Pages no vale para esto: solo sirve
+HTML/CSS/JS estáticos, y esa ruta dejaría de funcionar.
+
+1. Entra en [vercel.com](https://vercel.com) con tu cuenta de GitHub.
+2. "Add New… → Project" y elige este repositorio (`eskache/prueba-tecnica-binpar`).
+3. En "Environment Variables", añade `GROQ_API_KEY` con tu clave (y `GROQ_MODEL` si
+   quieres otro modelo). Sin esto se despliega igual, pero los botones de preguntas del
+   paso final fallan, como en local.
+4. "Deploy". Cuando termine, Vercel da la URL pública; se actualiza sola en cada `git
+   push` a `main`.
+
+(También se puede hacer con la CLI: `npx vercel` para crear el proyecto y
+`npx vercel --prod` para publicar, tras `vercel login`.)
+
 ## Stack
 
 TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm · axios (para llamar a Groq).
