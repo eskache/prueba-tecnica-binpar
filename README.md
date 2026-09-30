@@ -46,6 +46,22 @@ HTML/CSS/JS estáticos, y esa ruta dejaría de funcionar.
 (También se puede hacer con la CLI: `npx vercel` para crear el proyecto y
 `npx vercel --prod` para publicar, tras `vercel login`.)
 
+### Docker
+
+Un único comando levanta toda la solución, sin instalar Node ni nada más que Docker:
+
+```bash
+docker compose up --build
+```
+
+Abre [http://localhost:3000](http://localhost:3000). Para que funcionen los botones de
+preguntas, copia antes `.env.example` a `.env.local` con tu clave (igual que en local);
+`docker-compose.yml` lo lee si existe, y si no existe la app arranca igual, con esos
+botones mostrando un error. `Dockerfile` construye en tres fases (dependencias, build,
+y una imagen final mínima gracias a `output: "standalone"` en `next.config.ts`, que
+copia solo los archivos que la app de verdad necesita en vez de todo `node_modules`) y
+corre como un usuario sin privilegios, no como root. Imagen final: unos 324 MB.
+
 ## Stack
 
 TypeScript · Next.js (App Router) · Tailwind CSS v4 · npm · axios (para llamar a Groq).

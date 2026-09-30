@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    # .env.local es opcional (required: false): la app funciona igual sin él, solo que
+    # los botones de preguntas del paso final fallan, como se explica en el README.
+    env_file:
+      - path: .env.local
+        required: false
