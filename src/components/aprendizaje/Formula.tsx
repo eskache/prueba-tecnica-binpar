@@ -91,8 +91,13 @@ export default function Formula({ parts, values = {} }: FormulaProps) {
   }
 
   return (
+    // pointer-events-none: nada aquí es interactivo, pero el div ocupa todo el ancho
+    // (inset-x-0) aunque el texto esté centrado y sea estrecho. Sin esto, esa franja
+    // vacía tapaba clics en lo que hubiera debajo cuando el contenido de al lado crecía
+    // y lo empujaba hacia arriba (p. ej. los botones de preguntas del paso final, al
+    // aparecer la respuesta del modelo).
     <div
-      className={`absolute inset-x-0 top-18 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 font-medium sm:top-20 ${sizeClasses}`}
+      className={`pointer-events-none absolute inset-x-0 top-18 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 font-medium sm:top-20 ${sizeClasses}`}
     >
       {mainParts.map(renderPart)}
 
