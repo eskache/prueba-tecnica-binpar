@@ -51,7 +51,15 @@ export async function POST(request: Request) {
 
     return Response.json({ answer });
   } catch (error) {
-    console.error("Error al preguntar al modelo:", error);
+    // Axios envuelve el error de Groq en response.data: sin esto, el registro solo
+    // muestra "Request failed with status code 4xx" y no el motivo real (clave
+    // inválida, modelo retirado, límite de peticiones...). Se ve en los "Logs" del
+    // proyecto en Vercel (o en la terminal, en local).
+    if (axios.isAxiosError(error)) {
+      console.error("Error al preguntar al modelo:", error.response?.status, error.response?.data);
+    } else {
+      console.error("Error al preguntar al modelo:", error);
+    }
     return Response.json({ error: "No se ha podido obtener respuesta." }, { status: 502 });
   }
 }
