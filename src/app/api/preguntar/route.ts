@@ -2,11 +2,14 @@ import axios from "axios";
 import { LLM_QUESTIONS } from "@/lib/questions";
 
 // Modelo gratuito de Groq (compatible con la API de OpenAI). Se puede cambiar con la
-// variable de entorno GROQ_MODEL sin tocar código. "llama-3.3-70b-versatile" (el que
-// había antes) dio "model not found" en producción: Groq va retirando modelos del
-// catálogo gratuito con frecuencia. Este es más pequeño y, de momento, más estable.
+// variable de entorno GROQ_MODEL sin tocar código. Los modelos Llama (3.1-8b-instant,
+// 3.3-70b-versatile) daban "model not found": en la tabla de
+// https://console.groq.com/docs/models aparecen ya como "Enterprise" (precio
+// "ContactSales", no de pago por uso), fuera de alcance de una clave normal. Este es
+// uno de los dos únicos con precio y límites reales del plan Developer (el otro es
+// openai/gpt-oss-20b, más barato y rápido pero de menor calidad).
 const GROQ_CHAT_URL = "https://api.groq.com/openai/v1/chat/completions";
-const DEFAULT_MODEL = "llama-3.1-8b-instant";
+const DEFAULT_MODEL = "openai/gpt-oss-120b";
 
 const SYSTEM_PROMPT =
   "Eres el asistente de una aplicación que acaba de enseñar la ley de gravitación " +
