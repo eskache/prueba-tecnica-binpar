@@ -16,22 +16,30 @@ const SYSTEM_PROMPT =
  * modelo. Solo se aceptan esas preguntas: la clave es del servidor y no debe poder
  * usarse como un proxy abierto a un modelo de pago con preguntas arbitrarias. */
 export async function POST(request: Request) {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
-    return Response.json(
-      { error: "Falta configurar GROQ_API_KEY en el servidor." },
-      { status: 500 },
-    );
-  }
-
-  const body = await request.json().catch(() => null);
-  const question = body?.question;
-
-  if (typeof question !== "string" || !LLM_QUESTIONS.includes(question as never)) {
-    return Response.json({ error: "Esa pregunta no está disponible." }, { status: 400 });
-  }
-
+  // Toda la función va dentro del try: un fallo fuera de él (el body no tenía uno
+  // completo) deja la petición sin respuesta y, en Vercel, sin ningún registro que
+  // explique por qué: imposible de diagnosticar desde fuera. Los console.log marcan
+  // hasta dónde llegó a ejecutarse antes de fallar.
   try {
+    console.log("[/api/preguntar] petición recibida");
+
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      console.error("[/api/preguntar] falta la variable GROQ_API_KEY");
+      return Response.json(
+        { error: "Falta configurar GROQ_API_KEY en el servidor." },
+        { status: 500 },
+      );
+    }
+
+    const body = await request.json().catch(() => null);
+    const question = body?.question;
+    console.log("[/api/preguntar] pregunta recibida:", question);
+
+    if (typeof question !== "string" || !LLM_QUESTIONS.includes(question as never)) {
+      return Response.json({ error: "Esa pregunta no está disponible." }, { status: 400 });
+    }
+
     const groqResponse = await axios.post(
       GROQ_CHAT_URL,
       {
@@ -49,6 +57,7 @@ export async function POST(request: Request) {
     const answer = groqResponse.data.choices?.[0]?.message?.content?.trim();
     if (!answer) throw new Error("El modelo no devolvió texto");
 
+    console.log("[/api/preguntar] respuesta del modelo obtenida");
     return Response.json({ answer });
   } catch (error) {
     // Axios envuelve el error de Groq en response.data: sin esto, el registro solo
@@ -56,9 +65,13 @@ export async function POST(request: Request) {
     // inválida, modelo retirado, límite de peticiones...). Se ve en los "Logs" del
     // proyecto en Vercel (o en la terminal, en local).
     if (axios.isAxiosError(error)) {
-      console.error("Error al preguntar al modelo:", error.response?.status, error.response?.data);
+      console.error(
+        "[/api/preguntar] error de Groq:",
+        error.response?.status,
+        error.response?.data ?? error.message,
+      );
     } else {
-      console.error("Error al preguntar al modelo:", error);
+      console.error("[/api/preguntar] error inesperado:", error);
     }
     return Response.json({ error: "No se ha podido obtener respuesta." }, { status: 502 });
   }
