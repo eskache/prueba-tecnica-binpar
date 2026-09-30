@@ -60,19 +60,19 @@ export async function POST(request: Request) {
     console.log("[/api/preguntar] respuesta del modelo obtenida");
     return Response.json({ answer });
   } catch (error) {
-    // Axios envuelve el error de Groq en response.data: sin esto, el registro solo
-    // muestra "Request failed with status code 4xx" y no el motivo real (clave
-    // inválida, modelo retirado, límite de peticiones...). Se ve en los "Logs" del
-    // proyecto en Vercel (o en la terminal, en local).
+    // El motivo real (clave inválida, modelo retirado, límite de peticiones...) se
+    // manda también en la respuesta, no solo al registro: en el plan gratuito de
+    // Vercel los "Logs" son en directo y no quedan guardados, así que ver el motivo
+    // ahí exige tenerlos abiertos en el momento exacto de la petición. En la respuesta
+    // se ve siempre, con las herramientas de desarrollador del navegador (pestaña Red).
+    let detail = "";
     if (axios.isAxiosError(error)) {
-      console.error(
-        "[/api/preguntar] error de Groq:",
-        error.response?.status,
-        error.response?.data ?? error.message,
-      );
+      detail = JSON.stringify(error.response?.data ?? error.message);
+      console.error("[/api/preguntar] error de Groq:", error.response?.status, detail);
     } else {
+      detail = error instanceof Error ? error.message : String(error);
       console.error("[/api/preguntar] error inesperado:", error);
     }
-    return Response.json({ error: "No se ha podido obtener respuesta." }, { status: 502 });
+    return Response.json({ error: "No se ha podido obtener respuesta.", detail }, { status: 502 });
   }
 }

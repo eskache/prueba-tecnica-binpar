@@ -40,7 +40,15 @@ export default function FinalStep({ children }: FinalStepProps) {
       });
       const data = await response.json();
 
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {
+        // `detail` es el motivo real que da el proveedor (clave inválida, modelo
+        // retirado...), útil para depurar sin tener que mirar los registros del
+        // servidor. Se muestra tal cual porque este es un proyecto de prueba técnica,
+        // no una app con usuarios reales delante.
+        const reason = data.detail ? ` (motivo: ${data.detail})` : "";
+        setError(`No se ha podido obtener respuesta.${reason}`);
+        return;
+      }
       setAnswer(data.answer);
     } catch {
       setError("No se ha podido obtener respuesta. Inténtalo de nuevo.");
