@@ -4,6 +4,8 @@ Aplicación web que enseña la ley de gravitación universal de Newton (Parte A,
 `/aprendizaje`) y, dentro de la misma simulación, deja cargar las seis soluciones del
 problema de los tres cuerpos (Parte B, en `/simulacion`).
 
+Version Online sin tener que descargar nada -> https://prueba-tecnica-binpar.vercel.app/aprendizaje
+
 ## Cómo ejecutarlo
 
 ```bash
